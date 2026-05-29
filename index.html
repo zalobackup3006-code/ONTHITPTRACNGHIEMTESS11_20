@@ -13,12 +13,9 @@
             backdrop-filter: blur(10px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
-        .btn-press {
-            transition: all 0.15s ease;
-        }
-        .btn-press:active {
-            transform: scale(0.95);
-        }
+        .btn-press { transition: all 0.15s ease; }
+        .btn-press:active { transform: scale(0.95); }
+        
         /* Custom Scrollbar cho Quick Nav */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
@@ -33,14 +30,11 @@
             75% { transform: translateX(-5px); }
         }
         .shake-animation { animation: shake 0.4s ease-in-out; }
-        
-        /* Ẩn dấu chấm hỏi / dấu phẩy do format gốc */
         .clean-text { line-height: 1.6; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 min-h-screen text-gray-800 overflow-hidden flex flex-col relative">
 
-    <!-- Canvas cho hiệu ứng pháo hoa -->
     <canvas id="confetti" class="fixed inset-0 w-full h-full pointer-events-none z-50 hidden"></canvas>
 
     <!-- Màn hình Welcome -->
@@ -51,16 +45,14 @@
             <p class="text-gray-500 font-semibold mb-8">Cùng chinh phục 300 thử thách nhé!</p>
             <input type="text" id="student-name" placeholder="Nhập tên của em..." 
                    class="w-full text-xl p-4 border-4 border-blue-100 rounded-2xl focus:outline-none focus:border-blue-400 text-center font-bold mb-6 transition-colors">
-            <button onclick="startApp()" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-black text-xl py-4 rounded-2xl shadow-lg hover:shadow-xl btn-press">
+            <button onclick="startApp()" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-black text-xl py-4 rounded-2xl shadow-lg hover:shadow-xl btn-press">
                 BẮT ĐẦU NGAY!
             </button>
         </div>
     </div>
 
-    <!-- Layout chính của App (ẩn lúc đầu) -->
+    <!-- Layout chính của App -->
     <div id="app-screen" class="hidden flex-1 flex flex-col h-screen max-w-5xl mx-auto w-full p-2 md:p-6 relative">
-        
-        <!-- Header: Tiết độ & Controls -->
         <header class="flex flex-wrap items-center justify-between bg-white rounded-2xl p-4 shadow-sm mb-4 gap-4 z-20 relative">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-black text-xl">
@@ -76,7 +68,7 @@
             </div>
             
             <div class="flex-1 w-full md:w-auto md:max-w-xs h-4 bg-gray-100 rounded-full overflow-hidden">
-                <div id="progress-bar" class="h-full bg-gradient-to-r from-green-400 to-blue-500 w-0 transition-all duration-500"></div>
+                <div id="progress-bar" class="h-full bg-gradient-to-r from-green-400 to-green-500 w-0 transition-all duration-500"></div>
             </div>
 
             <div class="flex gap-2 w-full md:w-auto justify-end">
@@ -88,18 +80,13 @@
                 </button>
             </div>
             
-            <!-- Modal Quick Nav -->
             <div id="quick-nav-modal" class="hidden absolute top-full right-0 mt-2 w-full md:w-96 bg-white rounded-2xl shadow-2xl border-2 border-gray-100 p-4 max-h-[60vh] overflow-y-auto">
                 <h3 class="font-black text-lg mb-3">Danh sách câu hỏi</h3>
-                <div id="quick-nav-grid" class="grid grid-cols-5 gap-2">
-                    <!-- Nút render động -->
-                </div>
+                <div id="quick-nav-grid" class="grid grid-cols-5 gap-2"></div>
             </div>
         </header>
 
-        <!-- Khung Câu Hỏi -->
         <main class="flex-1 glass-card rounded-3xl p-6 md:p-10 flex flex-col shadow-2xl overflow-y-auto relative z-10">
-            <!-- Header Câu Hỏi -->
             <div class="flex items-center justify-between mb-6 border-b-2 border-gray-100 pb-4">
                 <div class="bg-blue-100 text-blue-700 px-4 py-2 rounded-xl font-black text-lg tracking-wide" id="q-badge">
                     Câu 1 / 300
@@ -109,32 +96,33 @@
                 </div>
             </div>
 
-            <!-- Nội dung câu hỏi -->
             <h2 id="q-instruction" class="text-xl md:text-2xl font-black text-indigo-900 mb-2"></h2>
             <p id="q-text" class="text-2xl md:text-3xl font-extrabold text-gray-800 mb-8 clean-text"></p>
 
-            <!-- Vùng tương tác -->
-            <div id="interactive-area" class="flex-1 flex flex-col justify-center">
-                <!-- Sẽ chèn Grid nút MCQ hoặc khu vực Reorder bằng JS -->
-            </div>
+            <div id="interactive-area" class="flex-1 flex flex-col justify-center"></div>
 
-            <!-- Vùng nút điều hướng chính -->
             <div class="mt-8 pt-6 border-t-2 border-gray-100 flex justify-end">
-                <button id="btn-next" onclick="nextQuestion()" class="hidden bg-gradient-to-r from-green-400 to-green-600 text-white px-8 py-4 rounded-2xl font-black text-xl shadow-lg hover:shadow-xl btn-press flex items-center gap-2">
+                <button id="btn-next" onclick="nextQuestion()" class="hidden bg-[#22c55e] hover:bg-[#16a34a] text-white px-8 py-4 rounded-xl font-black text-xl shadow-lg btn-press flex items-center gap-2">
                     Câu Tiếp Theo ➔
                 </button>
             </div>
         </main>
     </div>
 
-    <!-- Popups Feedback Tức Thì -->
+    <!-- UI MỚI: Popups Feedback giống hình tham khảo 100% -->
     <div id="feedback-overlay" class="fixed inset-0 z-50 bg-black/50 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
-        <div id="feedback-card" class="bg-white rounded-3xl p-8 max-w-sm w-full text-center transform scale-90 transition-transform">
-            <div id="feedback-icon" class="text-7xl mb-4">✅</div>
-            <h3 id="feedback-title" class="text-3xl font-black mb-2">Chính xác!</h3>
-            <p id="feedback-desc" class="text-gray-600 font-bold text-lg mb-6">Em làm rất tốt!</p>
-            <button onclick="closeFeedback()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-lg py-3 rounded-xl btn-press">
-                Đóng
+        <div id="feedback-card" class="bg-white rounded-3xl p-8 max-w-sm w-full text-center transform scale-90 transition-transform shadow-2xl relative">
+            <div id="feedback-icon" class="text-6xl mb-4 leading-none">🎉</div>
+            <h3 id="feedback-title" class="text-3xl font-black mb-2 text-[#22c55e]">Chính xác!</h3>
+            <p id="feedback-desc" class="text-gray-700 font-bold text-lg mb-6">Tuyệt vời, em đã trả lời đúng!</p>
+            
+            <!-- Hộp giải thích chi tiết (Theme Xanh/Đỏ thay đổi bằng JS) -->
+            <div id="feedback-explanation" class="p-4 rounded-xl text-left text-[15px] font-semibold mb-6">
+                <!-- Nội dung giải thích cụ thể -->
+            </div>
+            
+            <button onclick="closeFeedback()" id="btn-close-feedback" class="w-full bg-[#22c55e] hover:bg-[#16a34a] font-black text-xl py-3 rounded-xl btn-press text-white shadow-md">
+                Tiếp tục ➔
             </button>
         </div>
     </div>
@@ -146,7 +134,6 @@
                 <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Báo Cáo Kết Quả</h2>
                 <button onclick="closeReport()" class="text-gray-400 hover:text-red-500 font-black text-2xl btn-press">✕</button>
             </div>
-            
             <div class="grid grid-cols-3 gap-4 mb-6 text-center">
                 <div class="bg-blue-50 p-4 rounded-2xl border-2 border-blue-100">
                     <div class="text-sm font-bold text-blue-500 uppercase tracking-wider mb-1">Đã Hoàn Thành</div>
@@ -161,7 +148,6 @@
                     <div id="rp-redo" class="text-3xl font-black text-red-700">0</div>
                 </div>
             </div>
-
             <div class="flex-1 overflow-y-auto border-2 border-gray-100 rounded-2xl">
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-gray-50 sticky top-0 shadow-sm">
@@ -171,21 +157,14 @@
                             <th class="p-4 font-bold text-gray-600 border-b-2 text-green-500">Đáp án đúng</th>
                         </tr>
                     </thead>
-                    <tbody id="rp-table-body" class="divide-y-2 divide-gray-100">
-                        <!-- Nội dung render động -->
-                    </tbody>
+                    <tbody id="rp-table-body" class="divide-y-2 divide-gray-100"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- DỮ LIỆU & LOGIC XỬ LÝ JS -->
+    <!-- CODE JS -->
     <script>
-        /* ====================================================================
-           1. CẤU TRÚC DỮ LIỆU & ĐÁP ÁN (Chuẩn xác 100% không cần Regex phức tạp)
-           Chỉ định index đáp án đúng cho các Task 1,2,3 (MCQ).
-           Cung cấp câu chuẩn (đã bỏ dấu) cho Task 4 (Reorder).
-           ==================================================================== */
         const RAW_DATA = `BÀI TẬP SỐ 11
 Task 1.
 A. hairdresser B. tour guide C. office D. scientist
@@ -638,53 +617,426 @@ get/ presents/ lot/ Children/ a/ Children's/ on/ Day/of/.
 his/ father/ playing/ basketball/ Nam/ are /the/ and/ at/ gym/ now/.`;
 
         const ANSWERS = {
+            11: { 1: [2,0,1,2,0], 2: [3,2,1,1,2], 3: [1,2,2,1,0,3,1,1,3,0], 4: ["Did he have a barbecue in the garden yesterday", "I feel thirsty I want to drink some water", "She has a headache She shouldn't stay up late", "Let's make apple juice I'll bring some apples", "Will you bring a chocolate pie No I won't", "My father usually eats cereal with milk for breakfast", "What would Helen like to be when she grows up", "I think I'll visit the mountains tomorrow", "Tuan and Hoa may build sandcastles on the beach", "We enjoyed the food and drinks at the party"] },
+            12: { 1: [3,2,1,0,0], 2: [1,0,1,2,0], 3: [0,3,1,1,1,2,3,3,0,3], 4: ["Mai can't come to school because she has a bad cold", "What does your sister do in her free time", "Do you go fishing with your father in your free time", "Tam was very gentle and beautiful", "What would you like to be in the future", "What do people in Italy usually eat for dinner", "They usually eat bread with fruit for breakfast", "What would your brother like to be when he grows up", "Sue likes cutting hair I think she'll be a hairdresser", "I am going to visit the mountains next morning"] },
+            13: { 1: [2,1,3,0,1], 2: [2,3,3,0,0], 3: [2,2,3,0,2,3,1,0,1,1], 4: ["He doesn't like writing He doesn't like to be a writer", "What would you like to be when you grow up", "They are going to have a barbecue next weekend", "It's hot and dry today She is going to visit the beach", "What's the weather like in Melbourne in the winter", "It's warm and rainy in Ha Noi in the spring", "Who are the main characters in the story", "You can get to Ngo Mon square by bus", "I am going to visit an eco-farm this summer", "She often drinks fresh juice and does morning exercise"] },
+            14: { 1: [1,3,0,2,0], 2: [0,3,2,0,1], 3: [2,1,3,0,2,1,3,1,0,1], 4: ["Jenny lives in this building with her parents", "My address is 45 Oxford Street", "The sports centre is near the museum", "She likes helping her classmates", "My brother doesn't like going for a walk in his free time", "How often does your sister go to the cinema", "I and my brother wrap the presents for Tony's birthday", "I always ride my bike in the park", "Could you show us around your school", "Could you tell me the way to the music room"] },
+            15: { 1: [0,2,3,1,0], 2: [2,2,3,3,3], 3: [2,2,1,3,0,1,3,1,2,0], 4: ["I live in a house in the countryside", "I like English because I like learning languages", "What does your brother like doing in his free time", "I invite my friends and buy candy for my birthday party", "Do you live in that building No I don't", "Could you help your dad in the kitchen", "My best friend is clever and helpful", "People in Viet Nam usually eat rice for lunch", "Whose pencil sharpener is it It's Tom's", "My address is 38 Dien Bien street"] },
+            16: { 1: [3,1,0,2,1], 2: [3,1,1,0,1], 3: [1,3,2,0,3,2,2,1,0,2], 4: ["What does Laura always do at the weekend", "People in Viet Nam often eat Pho for breakfast", "You shouldn't skip breakfast because it's not good for your health", "What do people do to celebrate Christmas", "I sometimes help my mum with the cooking", "I am going to visit the beach tomorrow", "Vietnamese are friendly and clever", "Could you tell me the way to go downstairs", "I hope the weather is sunny tomorrow", "I would like to be a writer in the future"] },
+            17: { 1: [1,0,1,2,3], 2: [3,1,2,1,3], 3: [0,1,2,3,0,1,1,2,3,1], 4: ["Did you go to Ha Long Bay last weekend", "We visited Golden Bridge and bought some souvenirs", "We will sing and dance on Children's day", "What food and drinks will you have at the party", "I went to Laos last year The food was delicious", "I ate too much pizza now I have a stomachache", "Did he have a barbecue in the garden yesterday", "How does she feel She feels stuffed up", "My father usually eats cereal with milk for breakfast", "What would your brother like to be when he grows up"] },
+            18: { 1: [2,3,0,1,0], 2: [3,2,1,0,1], 3: [3,2,1,0,1,2,3,0,3,0], 4: ["She visits her grandparents every Sunday", "Who is the main character in the story", "Doctors look after patients in the hospital", "It's between the post office and the movie theater", "How much rice do you eat every day", "How much water do you drink everyday", "What is the winter like in your country", "It is usually hot and there are a lot of flowers in summer", "I think Hoan Kiem lake is big and quiet", "I'll go to Phu Quoc island next year"] },
+            19: { 1: [2,1,3,3,1], 2: [2,3,3,1,3], 3: [1,2,3,0,1,3,1,0,3,1], 4: ["Do you go fishing with your father in your free time", "I often play football with my classmates after school", "Nam likes farm animals I think he'll be a farmer", "What would Helen like to be when she grows up", "I am going to visit the mountains next morning", "He is going to make paper crafts next week", "Did you take part in the sports festival", "His father always gets up at 5.30 every morning", "It's clear today I am going to play outside then", "Hoa and her sister are going to visit Ha Noi for three days"] },
+            20: { 1: [2,3,0,1,3], 2: [3,2,1,0,3], 3: [1,0,3,2,2,0,1,3,2,1], 4: ["How did you get to Tuan Chau island your last holiday", "He often learns new words in English class", "He lives in a crowded town with his parents", "Tony was at the stadium last Sunday It was noisy", "I collected seashells with my brother on the beach", "We are going to have a party on Mid-Autumn festival", "Mai learns English by reading comic books in her free time", "I watched my favourite TV programme last night", "Children get a lot of presents on Children's Day", "Nam and his father are playing basketball at the gym now"] }
+        };
+
+        /* BỘ TỪ ĐIỂN 300 LỜI GIẢI THÍCH CHI TIẾT TỪNG CÂU HỎI MỘT */
+        const EXPLANATIONS = {
             11: {
-                1: [2,0,1,2,0], 2: [3,2,1,1,2], 3: [1,2,2,1,0,3,1,1,3,0],
-                4: ["Did he have a barbecue in the garden yesterday", "I feel thirsty I want to drink some water", "She has a headache She shouldn't stay up late", "Let's make apple juice I'll bring some apples", "Will you bring a chocolate pie No I won't", "My father usually eats cereal with milk for breakfast", "What would Helen like to be when she grows up", "I think I'll visit the mountains tomorrow", "Tuan and Hoa may build sandcastles on the beach", "We enjoyed the food and drinks at the party"]
+                1: [
+                    "Từ <b>'office'</b> chỉ địa điểm, các từ còn lại chỉ nghề nghiệp.",
+                    "Từ <b>'pilot'</b> chỉ người, các từ còn lại chỉ phương tiện giao thông.",
+                    "Từ <b>'weather'</b> là danh từ, các từ còn lại là tính từ miêu tả thời tiết.",
+                    "Từ <b>'thirty'</b> là số đếm, các từ còn lại là tính từ thời tiết (đuôi -y).",
+                    "Từ <b>'art'</b> là môn học, các từ còn lại là tính từ trạng thái/màu sắc."
+                ],
+                2: [
+                    "Chữ 'oo' trong <b>'noon'</b> phát âm là /u:/, còn lại là /ʊ/.",
+                    "Đuôi -ed trong <b>'played'</b> phát âm là /d/, còn lại là /ɪd/.",
+                    "Chữ 'th' trong <b>'that'</b> phát âm là /ð/, còn lại là /θ/.",
+                    "Chữ 'i' trong <b>'sit'</b> phát âm là /ɪ/, còn lại là /aɪ/.",
+                    "Đuôi 's' trong <b>'balls'</b> phát âm là /z/, còn lại là /s/."
+                ],
+                3: [
+                    "Cấu trúc 'I'm going to' chỉ tương lai, nên dùng <b>'next week'</b>.",
+                    "Tương lai gần: 'be going to + V (nguyên thể)' -> <b>'to visit'</b>.",
+                    "Sau 'will' dùng động từ nguyên thể -> <b>'be'</b>.",
+                    "'snowstorm' đếm được số ít, bắt đầu bằng phụ âm -> dùng mạo từ <b>'a'</b>.",
+                    "Hỏi 'Where from' (từ đâu tới) cần trả lời tên quốc gia -> <b>'Spain'</b>.",
+                    "Sau 'How many' cần danh từ số nhiều -> <b>'cars'</b>.",
+                    "Ngày tháng: Tháng + Ngày (số thứ tự) -> <b>'June first'</b>.",
+                    "Đáp lại lời mời 'Would you like' lịch sự -> <b>'Yes, please'</b>.",
+                    "Hỏi về tần suất thực hiện hành động -> dùng <b>'How often'</b>.",
+                    "Thời tiết lạnh và có tuyết (cold and snowy) là đặc trưng của <b>'winter'</b> (mùa đông)."
+                ],
+                4: [
+                    "Cấu trúc: Did + S + V(nguyên thể) + O + Nơi chốn + Thời gian.",
+                    "Dịch nghĩa logic: Tôi cảm thấy khát (thirsty). Tôi muốn uống nước.",
+                    "Mối quan hệ nguyên nhân: Bị đau đầu (headache) nên không nên thức khuya (shouldn't stay up late).",
+                    "Đưa ra lời rủ: Let's make apple juice (Hãy làm nước táo). Tớ sẽ mang táo tới.",
+                    "Hỏi tương lai: Will you bring...? Phủ định: No, I won't.",
+                    "S + usually + V(s/es) + thức ăn + with... + for breakfast.",
+                    "Hỏi nghề nghiệp tương lai: What would + S + like to be when + S + grows up?",
+                    "Dự đoán tương lai: I think I'll visit the mountains tomorrow.",
+                    "Mệnh đề khả năng: Tuan and Hoa may build sandcastles on the beach.",
+                    "Cấu trúc S + V-ed + O + Nơi chốn (We enjoyed the food and drinks at the party)."
+                ]
             },
             12: {
-                1: [3,2,1,0,0], 2: [1,0,1,2,0], 3: [0,3,1,1,1,2,3,3,0,3],
-                4: ["Mai can't come to school because she has a bad cold", "What does your sister do in her free time", "Do you go fishing with your father in your free time", "Tam was very gentle and beautiful", "What would you like to be in the future", "What do people in Italy usually eat for dinner", "They usually eat bread with fruit for breakfast", "What would your brother like to be when he grows up", "Sue likes cutting hair I think she'll be a hairdresser", "I am going to visit the mountains next morning"]
+                1: [
+                    "Từ <b>'boat'</b> là danh từ chỉ vật, các từ còn lại là động từ.",
+                    "Từ <b>'around'</b> là giới từ, các từ còn lại là danh từ số nhiều.",
+                    "Từ <b>'juice'</b> là đồ uống (danh từ), còn lại là tính từ.",
+                    "Từ <b>'blouse'</b> (áo sơ mi nữ) mặc ở thân trên, các từ còn lại mặc ở thân dưới.",
+                    "Từ <b>'snow white'</b> là tên nhân vật, các từ còn lại chỉ hiện tượng thời tiết."
+                ],
+                2: [
+                    "Chữ 'h' trong <b>'hour'</b> là âm câm, còn lại phát âm là /h/.",
+                    "Phần gạch chân trong <b>'wear'</b> phát âm là /eə/, còn lại là /ɪə/.",
+                    "Chữ 's' trong <b>'sure'</b> phát âm là /ʃ/ (s nặng), còn lại là /s/.",
+                    "Phần gạch chân trong <b>'beer'</b> phát âm là /ɪə/, còn lại là /i:/.",
+                    "Đuôi 's' trong <b>'books'</b> phát âm là /s/, còn lại là /z/."
+                ],
+                3: [
+                    "Môn Toán (Maths) liên quan đến việc giải toán -> <b>'solving problems'</b>.",
+                    "Bị ốm/mệt thì nên nghỉ ngơi -> <b>'get some rest'</b>.",
+                    "'Milk' là danh từ không đếm được, dùng <b>'some'</b> (một ít).",
+                    "'Apples' số nhiều đếm được, dùng <b>'a few'</b> (một vài).",
+                    "Đồ ăn tối (dinner) hợp lý nhất trong các đáp án là <b>'meat'</b> (thịt).",
+                    "Có từ 'and' kết nối 2 địa điểm -> dùng <b>'between'</b> (ở giữa).",
+                    "Gửi thư đến đâu dùng giới từ 'to' -> <b>'to the USA'</b>.",
+                    "Món ăn yêu thích (dishes) -> <b>'Chicken noodles'</b>.",
+                    "Không muốn ăn thêm vì đã no -> <b>'full'</b>.",
+                    "'Five' (5) đi với danh từ số nhiều -> <b>'eggs'</b>."
+                ],
+                4: [
+                    "Mệnh đề nguyên nhân: Mai can't come... because she has a bad cold.",
+                    "Hỏi hoạt động lúc rảnh rỗi: What does your sister do in her free time?",
+                    "Câu hỏi Yes/No hiện tại đơn: Do you go fishing with your father...?",
+                    "S + be + adj and adj: Tam was very gentle and beautiful.",
+                    "Hỏi mong muốn tương lai: What would you like to be in the future?",
+                    "Câu hỏi thói quen: What do people in Italy usually eat for dinner?",
+                    "Mô tả thói quen ăn uống: They usually eat bread with fruit for breakfast.",
+                    "Hỏi nghề tương lai của người khác: What would your brother like to be when he grows up?",
+                    "Dự đoán dựa trên sở thích: Sue likes cutting hair. I think she'll be a hairdresser.",
+                    "Dự định tương lai gần: I am going to visit the mountains next morning."
+                ]
             },
             13: {
-                1: [2,1,3,0,1], 2: [2,3,3,0,0], 3: [2,2,3,0,2,3,1,0,1,1],
-                4: ["He doesn't like writing He doesn't like to be a writer", "What would you like to be when you grow up", "They are going to have a barbecue next weekend", "It's hot and dry today She is going to visit the beach", "What's the weather like in Melbourne in the winter", "It's warm and rainy in Ha Noi in the spring", "Who are the main characters in the story", "You can get to Ngo Mon square by bus", "I am going to visit an eco-farm this summer", "She often drinks fresh juice and does morning exercise"]
+                1: [
+                    "Từ <b>'classroom'</b> là phòng học, các từ còn lại chỉ địa hình/khu vực.",
+                    "Từ <b>'cashier'</b> là nghề nghiệp, các từ còn lại là tính từ chỉ tính cách.",
+                    "Từ <b>'noisy'</b> là tính từ (ồn ào), các từ còn lại là loại nhà ở.",
+                    "Từ <b>'picture'</b> là danh từ, các từ còn lại là động từ.",
+                    "Từ <b>'math'</b> là môn học, các từ còn lại là số thứ tự."
+                ],
+                2: [
+                    "Chữ 'i' trong <b>'library'</b> phát âm là /aɪ/, còn lại là /ɪ/.",
+                    "Chữ 'th' trong <b>'thin'</b> phát âm là /θ/, còn lại là /ð/.",
+                    "Đuôi -ed trong <b>'watched'</b> phát âm là /t/, còn lại là /d/.",
+                    "Đuôi 's' trong <b>'desks'</b> phát âm là /s/ do tận cùng là 'k', còn lại là /z/.",
+                    "Chữ 'c' trong <b>'city'</b> phát âm là /s/, còn lại là /k/."
+                ],
+                3: [
+                    "Bị cảm cúm (flu) thì nên uống thuốc -> <b>'take some medicine'</b>.",
+                    "'Oil' không đếm được, dùng <b>'much'</b> để chỉ số lượng nhiều.",
+                    "Ăn món gì với món gì dùng giới từ <b>'with'</b> (eggs with rice).",
+                    "Thích đi du lịch (travelling) thì hợp làm hướng dẫn viên -> <b>'tour guide'</b>.",
+                    "Thích làm thí nghiệm (doing experiments) hợp làm nhà khoa học -> <b>'scientist'</b>.",
+                    "Cấu trúc like + V-ing -> <b>'does she like doing'</b>.",
+                    "Hỏi về tính cách dùng động từ 'to be' -> <b>'What is your sister like?'</b>",
+                    "Hỏi đồ vật của ai dùng <b>'Whose'</b> (của ai).",
+                    "Câu hỏi quá khứ với 'Were you', trả lời là <b>'No, I wasn't'</b> (ngôi I đi với was).",
+                    "Ngày 20 tháng 11 viết là <b>'November twentieth'</b>."
+                ],
+                4: [
+                    "Anh ấy không thích viết lách (writing), không thích làm nhà văn (writer).",
+                    "Hỏi nghề nghiệp tương lai: What would you like to be when you grow up?",
+                    "Tương lai gần: They are going to have a barbecue next weekend.",
+                    "Trời nóng khô (hot and dry). Cô ấy dự định ra biển (visit the beach).",
+                    "Hỏi thời tiết: What's the weather like in Melbourne in the winter?",
+                    "Thời tiết Hà Nội: It's warm and rainy in Ha Noi in the spring.",
+                    "Hỏi nhân vật chính: Who are the main characters in the story?",
+                    "Chỉ đường: You can get to Ngo Mon square by bus.",
+                    "Dự định hè này: I am going to visit an eco-farm this summer.",
+                    "Sở thích thói quen: She often drinks fresh juice and does morning exercise."
+                ]
             },
             14: {
-                1: [1,3,0,2,0], 2: [0,3,2,0,1], 3: [2,1,3,0,2,1,3,1,0,1],
-                4: ["Jenny lives in this building with her parents", "My address is 45 Oxford Street", "The sports centre is near the museum", "She likes helping her classmates", "My brother doesn't like going for a walk in his free time", "How often does your sister go to the cinema", "I and my brother wrap the presents for Tony's birthday", "I always ride my bike in the park", "Could you show us around your school", "Could you tell me the way to the music room"]
+                1: [
+                    "Từ <b>'geography'</b> là môn học, các từ còn lại chỉ nghề nghiệp người.",
+                    "Từ <b>'March'</b> là tháng, các từ còn lại là môn học.",
+                    "Từ <b>'beautiful'</b> là tính từ nguyên mẫu, các từ còn lại là dạng so sánh hơn (-er).",
+                    "Từ <b>'twelfth'</b> là số thứ tự (12th), các từ còn lại là tên tháng.",
+                    "Từ <b>'take'</b> là động từ, các từ còn lại là danh từ đồ vật."
+                ],
+                2: [
+                    "Đuôi 's' trong <b>'plays'</b> phát âm là /z/, còn lại là /s/.",
+                    "Chữ 'g' trong <b>'green'</b> phát âm là /g/, còn lại là /dʒ/.",
+                    "Chữ 'a' trong <b>'cat'</b> phát âm là /æ/, còn lại là /ɑː/ dài.",
+                    "Chữ 'e' trong <b>'he'</b> phát âm là /i:/, còn lại là /e/.",
+                    "Chữ 'e' trong <b>'where'</b> kết hợp với 'r' thành âm /eə/, còn lại là /e/."
+                ],
+                3: [
+                    "Đồng ý với lời mời 'Would you like...?' dùng <b>'Yes, please'</b>.",
+                    "Từ 'engineer' bắt đầu bằng nguyên âm nên dùng mạo từ <b>'an'</b>.",
+                    "Truyện cổ tích nổi tiếng: 'Nàng Bạch Tuyết và bảy chú lùn' -> <b>'seven dwarfs'</b>.",
+                    "'Water' không đếm được -> dùng <b>'How much'</b>.",
+                    "Trang trí, treo giấy màu lên tường dùng cụm từ <b>'put up'</b>.",
+                    "Y tá (nurse) làm việc tại viện dưỡng lão -> <b>'nursing home'</b>.",
+                    "Tính từ 'good' bổ nghĩa cho danh từ (cook), trạng từ 'well' bổ nghĩa cho động từ.",
+                    "Hỏi chiếc xe 'của ai' dùng từ để hỏi <b>'Whose'</b>.",
+                    "Động từ 'run' cần trạng từ bổ nghĩa. Trạng từ của fast vẫn là <b>'fast'</b>.",
+                    "Ngày mùng 1 tháng 1 -> Tháng + ngày (số thứ tự) -> <b>'January first'</b>."
+                ],
+                4: [
+                    "Nơi sống: Jenny lives in this building with her parents.",
+                    "Giới thiệu địa chỉ: My address is 45 Oxford Street.",
+                    "Vị trí: The sports centre is near the museum.",
+                    "Sở thích (like + V-ing): She likes helping her classmates.",
+                    "Phủ định sở thích: My brother doesn't like going for a walk in his free time.",
+                    "Hỏi tần suất: How often does your sister go to the cinema?",
+                    "Hành động: I and my brother wrap the presents for Tony's birthday.",
+                    "Thói quen với always: I always ride my bike in the park.",
+                    "Nhờ vả lịch sự: Could you show us around your school?",
+                    "Hỏi đường: Could you tell me the way to the music room?"
+                ]
             },
             15: {
-                1: [0,2,3,1,0], 2: [2,2,3,3,3], 3: [2,2,1,3,0,1,3,1,2,0],
-                4: ["I live in a house in the countryside", "I like English because I like learning languages", "What does your brother like doing in his free time", "I invite my friends and buy candy for birthday party", "Do you live in that building No I don't", "Could you help your dad in the kitchen", "My best friend is clever and helpful", "People in Viet Nam usually eat rice for lunch", "Whose pencil sharpener is it It's Tom's", "My address is 38 Dien Bien street"]
+                1: [
+                    "Từ <b>'mountain'</b> chỉ đồi núi, các từ còn lại liên quan đến biển/đại dương.",
+                    "Từ <b>'boat'</b> là thuyền (danh từ), còn lại là động từ hành động.",
+                    "Từ <b>'salad'</b> là rau củ thanh đạm, còn lại là các loại bánh/thức ăn nhanh.",
+                    "Từ <b>'water'</b> là nước, còn lại là các từ để hỏi (Wh-).",
+                    "Từ <b>'forest'</b> là rừng, các từ còn lại là sông, hồ, biển (vùng nước)."
+                ],
+                2: [
+                    "Chữ 'i' trong <b>'nine'</b> phát âm là /aɪ/, còn lại phát âm là /ɪ/.",
+                    "Chữ 'th' trong <b>'bathroom'</b> phát âm là /θ/, còn lại là /ð/.",
+                    "Chữ 'o' trong <b>'open'</b> phát âm là /oʊ/, còn lại là /ʌ/.",
+                    "Chữ 'a' trong <b>'ball'</b> phát âm là /ɔː/, còn lại là /æ/.",
+                    "Chữ 's' trong <b>'close'</b> phát âm là /z/, còn lại là /s/."
+                ],
+                3: [
+                    "Cụm từ 'Nghĩ gì về...' -> dùng <b>'think of'</b>.",
+                    "Hỏi khoảng cách từ đâu đến đâu -> dùng <b>'How far'</b>.",
+                    "Có 'last summer' (quá khứ) -> động từ chia quá khứ của take là <b>'took'</b>.",
+                    "Trang trí nhà cửa dịp Tết -> dùng động từ <b>'decorate'</b>.",
+                    "Sau 'Will you' dùng động từ nguyên thể -> <b>'have'</b>.",
+                    "Chủ ngữ 'She' số ít -> động từ thêm s/es -> <b>'uses'</b>.",
+                    "Có 'yesterday' (hôm qua) -> động từ nướng bánh chia quá khứ là <b>'baked'</b>.",
+                    "Sau trợ động từ 'didn't' luôn dùng động từ nguyên thể -> <b>'go'</b>.",
+                    "Thích thể thao (sports) -> có thể trở thành cầu thủ bóng đá <b>'soccer player'</b>.",
+                    "'I'm going to' mang ý nghĩa tương lai -> dùng trạng từ <b>'tomorrow'</b>."
+                ],
+                4: [
+                    "Sống ở đâu: I live in a house in the countryside.",
+                    "Nguyên nhân thích tiếng Anh: I like English because I like learning languages.",
+                    "Hỏi sở thích lúc rảnh: What does your brother like doing in his free time?",
+                    "Kế hoạch sinh nhật: I invite my friends and buy candy for my birthday party.",
+                    "Hỏi Yes/No: Do you live in that building? No, I don't.",
+                    "Đề nghị giúp đỡ: Could you help your dad in the kitchen?",
+                    "Miêu tả bạn thân: My best friend is clever and helpful.",
+                    "Thói quen ăn uống VN: People in Viet Nam usually eat rice for lunch.",
+                    "Hỏi sở hữu: Whose pencil sharpener is it? It's Tom's.",
+                    "Đưa địa chỉ: My address is 38 Dien Bien street."
+                ]
             },
             16: {
-                1: [3,1,0,2,1], 2: [3,1,1,0,1], 3: [1,3,2,0,3,2,2,1,0,2],
-                4: ["What does Laura always do at the weekend", "People in Viet Nam often eat Pho for breakfast", "You shouldn't skip breakfast because it's not good for your health", "What do people do to celebrate Christmas", "I sometimes help my mum with the cooking", "I am going to visit the beach tomorrow", "Vietnamese are friendly and clever", "Could you tell me the way to go downstairs", "I hope the weather is sunny tomorrow", "I would like to be a writer in the future"]
+                1: [
+                    "Từ <b>'history'</b> là môn học, các từ còn lại là nghề nghiệp.",
+                    "Từ <b>'snowstorm'</b> là danh từ, các từ còn lại là tính từ chỉ thời tiết.",
+                    "Từ <b>'earache'</b> (đau tai) là danh từ, các từ còn lại là tính từ.",
+                    "Từ <b>'clear'</b> là tính từ (quang đãng), các từ còn lại là các mùa trong năm.",
+                    "Từ <b>'humid'</b> (ẩm ướt) là tính từ, các từ còn lại là danh từ chỉ thiên tai."
+                ],
+                2: [
+                    "Chữ 'u' trong <b>'bus'</b> phát âm là /ʌ/, còn lại là /ɜː/.",
+                    "Chữ 'n' trong <b>'autumn'</b> là âm câm, các từ còn lại 'n' phát âm rõ.",
+                    "Chữ 'th' trong <b>'think'</b> là âm vô thanh /θ/, còn lại là âm hữu thanh /ð/.",
+                    "Chữ 'y' trong <b>'fly'</b> phát âm là /aɪ/, còn lại là /i/.",
+                    "Cụm 'ea' trong <b>'weather'</b> phát âm là /e/ (ngắn), còn lại là /i:/ (dài)."
+                ],
+                3: [
+                    "Có 'last weekend' (tuần trước) -> chia quá khứ của buy là <b>'bought'</b>.",
+                    "Câu trả lời 'Once a day' -> hỏi tần suất bằng <b>'How often'</b>.",
+                    "Có trợ động từ 'did' (quá khứ) -> trạng từ thời gian là <b>'last Sunday'</b>.",
+                    "'things' là danh từ số nhiều đếm được -> dùng cụm <b>'lots of'</b>.",
+                    "Trang trí bằng thứ gì đó -> decorate with -> dùng giới từ <b>'with'</b>.",
+                    "Có số nhà cụ thể -> dùng giới từ <b>'at'</b>.",
+                    "7 giờ 15 phút đọc là <b>'a quarter past seven'</b>.",
+                    "Hỏi 'favourite holiday' (ngày lễ) -> trả lời <b>'It's Christmas'</b>.",
+                    "Treo giấy đỏ lên tường -> dùng cụm động từ <b>'put up'</b>.",
+                    "Chủ ngữ Matt (số ít) và thời gian 'last night' -> dùng <b>'was'</b>."
+                ],
+                4: [
+                    "Hỏi thói quen cuối tuần: What does Laura always do at the weekend?",
+                    "Thói quen ăn sáng VN: People in Viet Nam often eat Pho for breakfast.",
+                    "Lời khuyên về sức khỏe: You shouldn't skip breakfast because it's not good for your health.",
+                    "Hỏi về cách ăn mừng: What do people do to celebrate Christmas?",
+                    "Giúp đỡ việc nhà: I sometimes help my mum with the cooking.",
+                    "Dự định tương lai: I am going to visit the beach tomorrow.",
+                    "Miêu tả tính cách: Vietnamese are friendly and clever.",
+                    "Hỏi đường đi xuống lầu: Could you tell me the way to go downstairs?",
+                    "Bày tỏ hy vọng: I hope the weather is sunny tomorrow.",
+                    "Ước mơ nghề nghiệp tương lai: I would like to be a writer in the future."
+                ]
             },
             17: {
-                1: [1,0,1,2,3], 2: [3,1,2,1,3], 3: [0,1,2,3,0,1,1,2,3,1],
-                4: ["Did you go to Ha Long Bay last weekend", "We visited Golden Bridge and bought some souvenirs", "We will sing and dance on Children's day", "What food and drinks will you have at the party", "I went to Laos last year The food was delicious", "I ate too much pizza now I have a stomachache", "Did he have a barbecue in the garden yesterday", "How does she feel She feels stuffed up", "My father usually eats cereal with milk for breakfast", "What would your brother like to be when he grows up"]
+                1: [
+                    "Từ <b>'Indian'</b> chỉ quốc tịch, các từ còn lại chỉ tên quốc gia.",
+                    "Từ <b>'noise'</b> là danh từ, các từ còn lại là tính từ chỉ tính cách.",
+                    "Từ <b>'someone'</b> là đại từ (ai đó), các từ còn lại là trạng từ tần suất.",
+                    "Từ <b>'sport'</b> là từ chỉ chung, các từ còn lại là môn thể thao cụ thể.",
+                    "Từ <b>'six'</b> là số đếm, các từ còn lại là số thứ tự."
+                ],
+                2: [
+                    "Chữ 'o' trong <b>'mirror'</b> phát âm là /ə/, còn lại phát âm là /ʌ/.",
+                    "Hai chữ 'zz' trong <b>'pizza'</b> phát âm là /ts/, còn lại là /z/.",
+                    "Cụm 'ea' trong <b>'head'</b> phát âm là /e/, còn lại là /i:/.",
+                    "Chữ 'c' trong <b>'cycle'</b> phát âm là /s/, các từ còn lại phát âm là /k/.",
+                    "Chữ 'i' trong <b>'kick'</b> phát âm là /ɪ/ (ngắn), còn lại là /aɪ/."
+                ],
+                3: [
+                    "Động từ to be 'is' dùng cho ngôi thứ ba số ít -> <b>'he'</b>.",
+                    "Từ 'astronaut' bắt đầu bằng nguyên âm -> dùng mạo từ <b>'an'</b>.",
+                    "Nói về số tầng của tòa nhà dùng số thứ tự -> <b>'second'</b> (tầng 2).",
+                    "Nói về số lượng phòng dùng số đếm -> <b>'five rooms'</b>.",
+                    "Trước mùa và quốc gia đều dùng giới từ <b>'in'</b> -> in summer in your country.",
+                    "Câu trả lời bắt đầu bằng 'Because' -> câu hỏi dùng <b>'Why'</b>.",
+                    "Hành động học từ mới là thói quen tích cực -> dùng <b>'usually'</b>.",
+                    "Đáp lại lời nhờ vả mang ý từ chối lịch sự -> <b>'Sorry, I'm busy'</b>.",
+                    "Hỏi về sự sở hữu (của ai) -> dùng <b>'Whose'</b>.",
+                    "Chủ ngữ 'the glue sticks' số nhiều -> dùng <b>'are'</b>."
+                ],
+                4: [
+                    "Hỏi việc đã làm tuần trước: Did you go to Ha Long Bay last weekend?",
+                    "Kể lại chuyến đi: We visited Golden Bridge and bought some souvenirs.",
+                    "Dự định ngày Thiếu nhi: We will sing and dance on Children's day.",
+                    "Hỏi thực đơn bữa tiệc: What food and drinks will you have at the party?",
+                    "Kể về món ăn ở Lào: I went to Laos last year. The food was delicious.",
+                    "Nguyên nhân - Kết quả: I ate too much pizza now I have a stomachache.",
+                    "Hỏi quá khứ: Did he have a barbecue in the garden yesterday?",
+                    "Miêu tả cảm giác sức khỏe: How does she feel? She feels stuffed up.",
+                    "Thói quen ăn sáng của bố: My father usually eats cereal with milk for breakfast.",
+                    "Hỏi ước mơ của anh trai: What would your brother like to be when he grows up?"
+                ]
             },
             18: {
-                1: [2,3,0,1,0], 2: [3,2,1,0,1], 3: [3,2,1,0,1,2,3,0,3,0],
-                4: ["She visits her grandparents every Sunday", "Who is the main character in the story", "Doctors look after patients in the hospital", "It's between the post office and the movie theater", "How much rice do you eat every day", "How much water do you drink everyday", "What is the winter like in your country", "It is usually hot and there are a lot of flowers in summer", "I think Hoan Kiem lake is big and quiet", "I'll go to Phu Quoc island next year"]
+                1: [
+                    "Từ <b>'week'</b> chỉ thời gian, các từ còn lại chỉ cảnh quan (đồi, chùa, sông).",
+                    "Từ <b>'headache'</b> (đau đầu) là danh từ, các từ còn lại là tính từ.",
+                    "Từ <b>'fever'</b> (cơn sốt) là triệu chứng bệnh, các từ còn lại là nghề nghiệp.",
+                    "Từ <b>'character'</b> (nhân vật) là danh từ, các từ còn lại là tính từ.",
+                    "Từ <b>'seed'</b> (hạt giống) là danh từ, các từ còn lại là động từ."
+                ],
+                2: [
+                    "Chữ 'a' trong <b>'fall'</b> phát âm là /ɔː/, còn lại là /eɪ/.",
+                    "Chữ 'i' trong <b>'like'</b> phát âm là /aɪ/, còn lại là /ɪ/ (ngắn).",
+                    "Chữ 'o' trong <b>'cold'</b> phát âm là /oʊ/, còn lại là /ɒ/ (o ngắn).",
+                    "Chữ 'u' trong <b>'music'</b> phát âm là /ju:/, còn lại là /ʌ/.",
+                    "Cụm 'ea' trong <b>'season'</b> phát âm là /i:/, còn lại là /e/ hoặc /eə/."
+                ],
+                3: [
+                    "Cụm từ cố định: in your <b>'free'</b> time (thời gian rảnh rỗi).",
+                    "Câu trả lời 'Once a week' -> hỏi tần suất bằng <b>'How often'</b>.",
+                    "Số lần từ 3 trở lên dùng 'times' (có s) -> <b>'three times'</b>.",
+                    "Từ 'astronaut' bắt đầu bằng nguyên âm -> dùng <b>'An'</b>.",
+                    "Địa chỉ chỉ có tên đường -> dùng giới từ <b>'on'</b>.",
+                    "Cấu trúc 'cách làm gì' -> dùng <b>'to get'</b> (how to get there).",
+                    "Cụm giới từ: <b>'in front'</b> of you (ở phía trước bạn).",
+                    "Hỏi khoảng cách -> dùng <b>'How far'</b>.",
+                    "Hỏi sự sở hữu -> dùng từ để hỏi <b>'Whose'</b>.",
+                    "Gửi thư ĐẾN đâu đó -> dùng giới từ <b>'to'</b>."
+                ],
+                4: [
+                    "Thói quen mỗi Chủ Nhật: She visits her grandparents every Sunday.",
+                    "Hỏi nhân vật chính: Who is the main character in the story?",
+                    "Công việc của bác sĩ: Doctors look after patients in the hospital.",
+                    "Vị trí: It's between the post office and the movie theater.",
+                    "Hỏi lượng cơm (không đếm được): How much rice do you eat every day?",
+                    "Hỏi lượng nước (không đếm được): How much water do you drink everyday?",
+                    "Hỏi thời tiết mùa đông: What is the winter like in your country?",
+                    "Miêu tả mùa hè: It is usually hot and there are a lot of flowers in summer.",
+                    "Miêu tả hồ Hoàn Kiếm: I think Hoan Kiem lake is big and quiet.",
+                    "Dự định đi du lịch: I'll go to Phu Quoc island next year."
+                ]
             },
             19: {
-                1: [2,1,3,3,1], 2: [2,3,3,1,3], 3: [1,2,3,0,1,3,1,0,3,1],
-                4: ["Do you go fishing with your father in your free time", "I often play football with my classmates after school", "Nam likes farm animals I think he'll be a farmer", "What would Helen like to be when she grows up", "I am going to visit the mountains next morning", "He is going to make paper crafts next week", "Did you take part in the sports festival", "His father always gets up at 5.30 every morning", "It's clear today I am going to play outside then", "Hoa and her sister are going to visit Ha Noi for three days"]
+                1: [
+                    "Từ <b>'meat'</b> (thịt) là danh từ, các từ còn lại là tính từ.",
+                    "Từ <b>'visited'</b> chia quá khứ theo quy tắc, còn lại là bất quy tắc.",
+                    "Từ <b>'boring'</b> là tính từ đuôi -ing, còn lại là tính từ đuôi -ed.",
+                    "Từ <b>'milk'</b> là đồ uống, các từ còn lại là lượng từ.",
+                    "Từ <b>'drive'</b> là động từ (lái xe), các từ còn lại là nghề nghiệp."
+                ],
+                2: [
+                    "Chữ 'u' trong <b>'study'</b> phát âm là /ʌ/, các từ còn lại 'u' phát âm là /ju:/.",
+                    "Tháng <b>'November'</b> có âm tiết thứ hai là /oʊ/ (âm o), còn lại là /e/.",
+                    "Chữ 'a' trong <b>'April'</b> phát âm là /eɪ/, chữ 'i' trong các từ còn lại là /aɪ/.",
+                    "Cụm 'ow' trong <b>'now'</b> phát âm là /aʊ/ (ao), còn lại là /oʊ/ (âu).",
+                    "Hai chữ 'oo' trong <b>'floor'</b> phát âm là /ɔː/, còn lại là /u:/."
+                ],
+                3: [
+                    "Câu trả lời là địa điểm (in Ha Noi) -> Dùng <b>'Where'</b>.",
+                    "Có 'last week' -> Chia thì quá khứ đơn <b>'lived'</b>.",
+                    "Có 'yesterday morning' -> Mượn trợ động từ quá khứ <b>'did'</b>.",
+                    "Cấu trúc tương lai gần 'Are you going to + V' -> Chọn <b>'going'</b>.",
+                    "Cấu trúc want + to V -> Chọn <b>'to be'</b> (trở thành).",
+                    "Tháng thứ chín trong năm là Tháng 9 -> <b>'September'</b>.",
+                    "Tháng 5 là tháng thứ năm -> Chọn số thứ tự <b>'fifth'</b>.",
+                    "Âm nhạc, Tiếng Anh, Toán học là các môn học -> <b>'subjects'</b>.",
+                    "Chủ ngữ 'a lot of people' (nhiều người) quá khứ -> dùng <b>'were'</b>.",
+                    "Câu có 'will' (sẽ) chỉ tương lai -> Trạng từ <b>'tomorrow'</b>."
+                ],
+                4: [
+                    "Hỏi thói quen câu cá: Do you go fishing with your father in your free time?",
+                    "Chơi bóng với bạn cùng lớp: I often play football with my classmates after school.",
+                    "Dự đoán nghề nghiệp: Nam likes farm animals. I think he'll be a farmer.",
+                    "Hỏi nghề tương lai của Helen: What would Helen like to be when she grows up?",
+                    "Kế hoạch sáng mai: I am going to visit the mountains next morning.",
+                    "Kế hoạch tuần tới: He is going to make paper crafts next week.",
+                    "Hỏi việc tham gia lễ hội: Did you take part in the sports festival?",
+                    "Thói quen dậy sớm của bố: His father always gets up at 5.30 every morning.",
+                    "Dự định ra ngoài chơi: It's clear today. I am going to play outside then.",
+                    "Kế hoạch thăm Hà Nội 3 ngày: Hoa and her sister are going to visit Ha Noi for three days."
+                ]
             },
             20: {
-                1: [2,3,0,1,3], 2: [3,2,1,0,3], 3: [1,0,3,2,2,0,1,3,2,1],
-                4: ["How did you get to Tuan Chau island your last holiday", "He often learns new words in English class", "He lives in a crowded town with his parents", "Tony was at the stadium last Sunday It was noisy", "I collected seashells with my brother on the beach", "We are going to have a party on Mid-Autumn festival", "Mai learns English by reading comic books in her free time", "I watched my favourite TV programme last night", "Children get a lot of presents on Children's Day", "Nam and his father are playing basketball at the gym now"]
+                1: [
+                    "Từ <b>'solves'</b> là động từ, các từ còn lại là danh từ số nhiều.",
+                    "Từ <b>'want'</b> là động từ, các từ còn lại là từ để hỏi (Wh-).",
+                    "Từ <b>'square'</b> là danh từ, còn lại là giới từ chỉ vị trí.",
+                    "Từ <b>'school'</b> là trường học, các từ còn lại là đồ dùng học tập nhỏ.",
+                    "Từ <b>'around'</b> là giới từ, các từ còn lại là địa điểm vui chơi."
+                ],
+                2: [
+                    "Chữ 'a' trong <b>'amazing'</b> phát âm là /ə/, còn lại là /æ/.",
+                    "Chữ 'a' trong <b>'pagoda'</b> phát âm là /ə/, còn lại phát âm là /ɒ/.",
+                    "Chữ 'u' trong <b>'ruler'</b> phát âm là /u:/, còn lại phát âm là /ʌ/.",
+                    "Chữ 'c' trong <b>'cinema'</b> phát âm là /s/, các từ còn lại là /eɪ/.",
+                    "Chữ 'i' trong <b>'write'</b> phát âm là /aɪ/, còn lại là /ɪ/ (i ngắn)."
+                ],
+                3: [
+                    "Nghề phóng viên (reporter) thì công việc là đưa tin tức -> <b>'report the news'</b>.",
+                    "Cách viết ngày tháng: Tháng + Ngày (số thứ tự) -> <b>'January first'</b>.",
+                    "Câu trả lời là địa chỉ cụ thể -> Câu hỏi là 'What is your <b>address</b>?'.",
+                    "'showers' ở dạng số nhiều -> Dùng lượng từ <b>'some'</b>.",
+                    "Trong câu có 'than', cần dùng tính từ so sánh hơn -> <b>'cheaper'</b>.",
+                    "Tháng thứ sáu trong năm là Tháng 6 -> <b>'June'</b>.",
+                    "Câu ở thì quá khứ -> Trợ động từ phải là quá khứ <b>'did'</b>.",
+                    "Động từ 'kicks' cần trạng từ bổ nghĩa của 'hard' là <b>'hard'</b>.",
+                    "Sống ở căn hộ TRÊN tầng 2 -> Dùng giới từ <b>'on'</b>.",
+                    "Đi bằng xe ô tô cùng với bố -> Chọn <b>'by/ with'</b>."
+                ],
+                4: [
+                    "Hỏi phương tiện đi lại kỳ nghỉ trước: How did you get to Tuan Chau island your last holiday?",
+                    "Thói quen học từ mới: He often learns new words in English class.",
+                    "Sống ở thị trấn đông đúc: He lives in a crowded town with his parents.",
+                    "Kể lại việc Chủ nhật trước: Tony was at the stadium last Sunday. It was noisy.",
+                    "Thu thập vỏ sò trên bãi biển: I collected seashells with my brother on the beach.",
+                    "Kế hoạch Tết Trung thu: We are going to have a party on Mid-Autumn festival.",
+                    "Cách tự học Tiếng Anh: Mai learns English by reading comic books in her free time.",
+                    "Kể việc đã xem tivi tối qua: I watched my favourite TV programme last night.",
+                    "Trẻ em nhận quà ngày 1/6: Children get a lot of presents on Children's Day.",
+                    "Hiện tại tiếp diễn: Nam and his father are playing basketball at the gym now."
+                ]
             }
         };
 
-        // Hàm xóa dấu câu để học sinh không bị sai oan
-        function cleanText(str) {
-            return str.replace(/[.,?]/g, '').trim();
-        }
+        // Hàm xóa dấu câu
+        function cleanText(str) { return str.replace(/[.,?]/g, '').trim(); }
 
+        // Trình phân tích dữ liệu
         function parseQuestions(raw) {
             const result = [];
             let qIdCounter = 0;
@@ -707,12 +1059,10 @@ his/ father/ playing/ basketball/ Nam/ are /the/ and/ at/ gym/ now/.`;
                                 const opts = [...line.matchAll(/(?:[A-Da-d])\.\s*(.+?)(?=(?:\s+[A-Da-d]\.)|$)/g)].map(m => m[1].trim());
                                 if(opts.length > 0) {
                                     result.push({
-                                        id: qIdCounter++, sample: sampleId, task: taskId,
+                                        id: qIdCounter++, sample: sampleId, task: taskId, indexInTask: qIndex,
                                         type: 'mcq',
                                         instruction: taskId === 1 ? "Chọn từ khác loại (Odd one out)" : "Chọn từ có phát âm khác",
-                                        question: "",
-                                        options: opts,
-                                        correct: ANSWERS[sampleId][taskId][qIndex++]
+                                        question: "", options: opts, correct: ANSWERS[sampleId]?.[taskId]?.[qIndex++] || 0
                                     });
                                 }
                             }
@@ -723,12 +1073,9 @@ his/ father/ playing/ basketball/ Nam/ are /the/ and/ at/ gym/ now/.`;
                                 const opts = [...lines[k].matchAll(/(?:[A-Da-d])\.\s*(.+?)(?=(?:\s+[A-Da-d]\.)|$)/g)].map(m => m[1].trim());
                                 const qText = cleanText(lines[k-1] || "");
                                 result.push({
-                                    id: qIdCounter++, sample: sampleId, task: taskId,
-                                    type: 'mcq',
-                                    instruction: "Chọn đáp án đúng nhất",
-                                    question: qText,
-                                    options: opts,
-                                    correct: ANSWERS[sampleId][taskId][qIndex++]
+                                    id: qIdCounter++, sample: sampleId, task: taskId, indexInTask: qIndex,
+                                    type: 'mcq', instruction: "Chọn đáp án đúng nhất",
+                                    question: qText, options: opts, correct: ANSWERS[sampleId]?.[taskId]?.[qIndex++] || 0
                                 });
                             }
                         }
@@ -736,16 +1083,14 @@ his/ father/ playing/ basketball/ Nam/ are /the/ and/ at/ gym/ now/.`;
                         lines.forEach(line => {
                             if (line.includes('/')) {
                                 const words = line.split('/').map(w => cleanText(w)).filter(w => w);
-                                // Trộn ngẫu nhiên các từ
                                 const shuffledWords = [...words].sort(() => Math.random() - 0.5);
                                 result.push({
-                                    id: qIdCounter++, sample: sampleId, task: taskId,
-                                    type: 'reorder',
-                                    instruction: "Sắp xếp các từ thành câu hoàn chỉnh",
-                                    question: "",
-                                    words: shuffledWords,
-                                    correctStr: cleanText(ANSWERS[sampleId][taskId][qIndex++]).toLowerCase().replace(/\s+/g, '')
+                                    id: qIdCounter++, sample: sampleId, task: taskId, indexInTask: qIndex,
+                                    type: 'reorder', instruction: "Sắp xếp các từ thành câu hoàn chỉnh",
+                                    question: "", words: shuffledWords,
+                                    correctStr: cleanText(ANSWERS[sampleId]?.[taskId]?.[qIndex] || "").toLowerCase().replace(/\s+/g, '')
                                 });
+                                qIndex++;
                             }
                         });
                     }
@@ -754,45 +1099,40 @@ his/ father/ playing/ basketball/ Nam/ are /the/ and/ at/ gym/ now/.`;
             return result;
         }
 
-        // Tình trạng App (State)
         const appState = {
-            name: '',
-            currentIndex: 0,
-            questions: parseQuestions(RAW_DATA),
-            answers: {}, // Lưu trạng thái đúng sai: { 0: true (đúng ngay), 1: false (có sai) }
-            lastWrong: {},
-            currentReorderAnswer: []
+            name: '', currentIndex: 0, questions: parseQuestions(RAW_DATA),
+            answers: {}, lastWrong: {}, currentReorderAnswer: []
         };
 
-        /* ====================================================================
-           2. LUỒNG ĐIỀU KHIỂN & RENDER GIAO DIỆN
-           ==================================================================== */
-        
+        function getExplanation(q, isCorrect, userChoiceStr) {
+            const manualDetail = EXPLANATIONS[q.sample]?.[q.task]?.[q.indexInTask];
+            
+            if (isCorrect) {
+                return `<b>Giải thích:</b> ${manualDetail}`;
+            } else {
+                let errText = `Em đã chọn/ghép: <b class="text-red-600 line-through mr-2">"${userChoiceStr}"</b><br><br>`;
+                return errText + `<b>💡 Hướng dẫn:</b> ${manualDetail}`;
+            }
+        }
+
         function startApp() {
             const nameInput = document.getElementById('student-name').value.trim();
-            if (!nameInput) {
-                alert("Em hãy nhập tên để bắt đầu nhé!");
-                return;
-            }
+            if (!nameInput) { alert("Em hãy nhập tên để bắt đầu nhé!"); return; }
             appState.name = nameInput;
             document.getElementById('header-name').innerText = appState.name;
-            
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('app-screen').classList.remove('hidden');
-            
             renderQuestion();
             updateUI();
         }
 
         function renderQuestion() {
             const q = appState.questions[appState.currentIndex];
-            appState.currentReorderAnswer = []; // Reset reorder buffer
-            
+            appState.currentReorderAnswer = []; 
             document.getElementById('q-badge').innerText = `Câu ${appState.currentIndex + 1} / ${appState.questions.length}`;
             document.getElementById('q-sample-info').innerText = `Bài tập ${q.sample} - Task ${q.task}`;
             document.getElementById('q-instruction').innerText = q.instruction;
             document.getElementById('q-text').innerText = q.question;
-            
             const area = document.getElementById('interactive-area');
             area.innerHTML = '';
             
@@ -804,29 +1144,24 @@ his/ father/ playing/ basketball/ Nam/ are /the/ and/ at/ gym/ now/.`;
                 q.options.forEach((opt, idx) => {
                     const btn = document.createElement('button');
                     btn.className = `btn-press text-left text-xl font-bold p-6 rounded-2xl border-4 transition-all duration-200 
-                        ${isCompleted && idx === q.correct ? 'bg-green-100 border-green-500 text-green-800' : 'bg-white border-blue-100 hover:border-blue-400 text-gray-700 hover:bg-blue-50'}`;
-                    btn.innerHTML = `<span class="inline-block bg-blue-100 text-blue-600 rounded-lg w-10 h-10 text-center leading-10 mr-3">${String.fromCharCode(65+idx)}</span> ${opt}`;
-                    btn.onclick = () => checkMcqAnswer(idx, btn);
+                        ${isCompleted && idx === q.correct ? 'bg-[#f0fdf4] border-[#22c55e] text-green-700' : 'bg-white border-blue-100 hover:border-blue-400 text-gray-700'}`;
+                    btn.innerHTML = `<span class="inline-block ${isCompleted && idx === q.correct ? 'bg-[#22c55e] text-white' : 'bg-blue-100 text-blue-600'} rounded-lg w-10 h-10 text-center leading-10 mr-3">${String.fromCharCode(65+idx)}</span> ${opt}`;
+                    btn.onclick = () => checkMcqAnswer(idx, btn, opt);
                     grid.appendChild(btn);
                 });
                 area.appendChild(grid);
             } 
             else if (q.type === 'reorder') {
-                // Dropzone (Câu trả lời)
                 const answerZone = document.createElement('div');
                 answerZone.id = 'reorder-answer-zone';
                 answerZone.className = 'min-h-[80px] bg-blue-50 border-4 border-dashed border-blue-300 rounded-2xl p-4 flex flex-wrap gap-2 items-center mb-6';
-                
-                // Nguồn từ (Words pool)
                 const wordPool = document.createElement('div');
                 wordPool.id = 'reorder-word-pool';
                 wordPool.className = 'flex flex-wrap gap-3 justify-center mb-6';
                 
-                // Nếu đã hoàn thành, hiển thị thẳng câu đúng
                 if (isCompleted) {
-                    answerZone.className = 'min-h-[80px] bg-green-100 border-4 border-solid border-green-500 rounded-2xl p-4 flex flex-wrap gap-2 items-center mb-6 text-xl font-bold text-green-800';
-                    answerZone.innerText = ANSWERS[q.sample][q.task][appState.currentIndex % 10]; // Hacky fix for demo text
-                    answerZone.innerText = "Câu đã hoàn thành chính xác!";
+                    answerZone.className = 'min-h-[80px] bg-[#f0fdf4] border-4 border-solid border-[#22c55e] rounded-2xl p-4 flex flex-wrap gap-2 items-center mb-6 text-xl font-bold text-green-700';
+                    answerZone.innerText = ANSWERS[q.sample]?.[q.task]?.[q.indexInTask] || "Câu trả lời chính xác";
                 } else {
                     q.words.forEach((word, idx) => {
                         const chip = document.createElement('button');
@@ -836,7 +1171,6 @@ his/ father/ playing/ basketball/ Nam/ are /the/ and/ at/ gym/ now/.`;
                         wordPool.appendChild(chip);
                     });
                 }
-
                 area.appendChild(answerZone);
                 area.appendChild(wordPool);
 
@@ -849,36 +1183,27 @@ his/ father/ playing/ basketball/ Nam/ are /the/ and/ at/ gym/ now/.`;
                 }
             }
 
-            // Xử lý nút Next
-            const btnNext = document.getElementById('btn-next');
-            if (isCompleted) {
-                btnNext.classList.remove('hidden');
-            } else {
-                btnNext.classList.add('hidden');
-            }
+            document.getElementById('btn-next').classList.toggle('hidden', !isCompleted);
         }
 
-        // --- Logic Câu hỏi ---
-        function checkMcqAnswer(selectedIndex, btnNode) {
+        function checkMcqAnswer(selectedIndex, btnNode, optText) {
             const q = appState.questions[appState.currentIndex];
-            if (appState.answers[appState.currentIndex] !== undefined) return; // Đã làm đúng rồi
+            if (appState.answers[appState.currentIndex] !== undefined) return; 
 
             if (selectedIndex === q.correct) {
-                handleCorrect();
-                btnNode.className = 'btn-press text-left text-xl font-bold p-6 rounded-2xl border-4 bg-green-100 border-green-500 text-green-800';
+                handleCorrect(optText);
+                btnNode.className = 'btn-press text-left text-xl font-bold p-6 rounded-2xl border-4 bg-[#f0fdf4] border-[#22c55e] text-green-700';
+                btnNode.children[0].className = 'inline-block bg-[#22c55e] text-white rounded-lg w-10 h-10 text-center leading-10 mr-3';
             } else {
-                handleWrong(`Em đã chọn: ${q.options[selectedIndex]}`);
-                btnNode.classList.add('bg-red-100', 'border-red-400', 'text-red-800', 'shake-animation');
-                setTimeout(() => {
-                    btnNode.classList.remove('shake-animation', 'bg-red-100', 'border-red-400', 'text-red-800');
-                }, 500);
+                handleWrong(optText);
+                btnNode.classList.add('bg-red-50', 'border-red-400', 'text-red-700', 'shake-animation');
+                setTimeout(() => btnNode.classList.remove('shake-animation', 'bg-red-50', 'border-red-400', 'text-red-700'), 500);
             }
         }
 
         function moveWord(chipNode, word, idx, isToAnswer) {
             const answerZone = document.getElementById('reorder-answer-zone');
             const wordPool = document.getElementById('reorder-word-pool');
-            
             if (isToAnswer) {
                 appState.currentReorderAnswer.push(word);
                 chipNode.onclick = () => moveWord(chipNode, word, idx, false);
@@ -895,58 +1220,46 @@ his/ father/ playing/ basketball/ Nam/ are /the/ and/ at/ gym/ now/.`;
 
         function checkReorderAnswer() {
             const q = appState.questions[appState.currentIndex];
-            const userStr = appState.currentReorderAnswer.join('').toLowerCase().replace(/\s+/g, '');
+            const userStrRaw = appState.currentReorderAnswer.join('').toLowerCase().replace(/\s+/g, '');
+            const userChoiceDisplay = appState.currentReorderAnswer.join(' ');
             
-            if (userStr === q.correctStr) {
-                handleCorrect();
-            } else {
-                handleWrong(`Câu của em ghép: ${appState.currentReorderAnswer.join(' ')}`);
+            if (userStrRaw === q.correctStr) { handleCorrect(userChoiceDisplay); } 
+            else {
+                handleWrong(userChoiceDisplay);
                 document.getElementById('reorder-answer-zone').classList.add('shake-animation', 'border-red-400', 'bg-red-50');
-                setTimeout(() => {
-                    document.getElementById('reorder-answer-zone').classList.remove('shake-animation', 'border-red-400', 'bg-red-50');
-                }, 500);
+                setTimeout(() => document.getElementById('reorder-answer-zone').classList.remove('shake-animation', 'border-red-400', 'bg-red-50'), 500);
             }
         }
 
-        // --- Logic Phản hồi ---
-        function handleCorrect() {
-            // Đánh dấu đúng
-            if (appState.answers[appState.currentIndex] === undefined) {
-                appState.answers[appState.currentIndex] = true; // Đúng lần đầu
-            }
-            
-            showFeedback(true);
+        function handleCorrect(userChoiceStr) {
+            const q = appState.questions[appState.currentIndex];
+            if (appState.answers[appState.currentIndex] === undefined) appState.answers[appState.currentIndex] = true; 
+            showFeedback(true, getExplanation(q, true, userChoiceStr));
             document.getElementById('btn-next').classList.remove('hidden');
             updateUI();
             fireConfetti();
         }
 
-        function handleWrong(wrongDetail) {
-            if (appState.answers[appState.currentIndex] === undefined) {
-                appState.answers[appState.currentIndex] = false; // Đã từng sai
-            }
-            appState.lastWrong[appState.currentIndex] = wrongDetail;
-            showFeedback(false);
+        function handleWrong(userChoiceStr) {
+            const q = appState.questions[appState.currentIndex];
+            if (appState.answers[appState.currentIndex] === undefined) appState.answers[appState.currentIndex] = false; 
+            appState.lastWrong[appState.currentIndex] = userChoiceStr;
+            showFeedback(false, getExplanation(q, false, userChoiceStr));
         }
 
         function nextQuestion() {
             if (appState.currentIndex < appState.questions.length - 1) {
                 appState.currentIndex++;
                 renderQuestion();
-            } else {
-                showReport();
-            }
+            } else showReport();
         }
 
-        // --- UI Updates ---
         function updateUI() {
             const totalDone = Object.keys(appState.answers).length;
             const total = appState.questions.length;
-            
             document.getElementById('header-progress-text').innerText = `${totalDone}/${total}`;
             document.getElementById('progress-bar').style.width = `${(totalDone/total)*100}%`;
 
-            // Kiểm tra mở khóa nút Báo Cáo: Hoàn thành 25 câu của bất kỳ Sample nào
             let unlockReport = false;
             const sampleCounts = {};
             Object.keys(appState.answers).forEach(qIdx => {
@@ -954,18 +1267,11 @@ his/ father/ playing/ basketball/ Nam/ are /the/ and/ at/ gym/ now/.`;
                 sampleCounts[sId] = (sampleCounts[sId] || 0) + 1;
                 if(sampleCounts[sId] >= 25) unlockReport = true;
             });
-
-            if (unlockReport) {
-                document.getElementById('btn-report').classList.remove('hidden');
-            }
-            
+            if (unlockReport) document.getElementById('btn-report').classList.remove('hidden');
             renderQuickNavGrid();
         }
 
-        function toggleQuickNav() {
-            const modal = document.getElementById('quick-nav-modal');
-            modal.classList.toggle('hidden');
-        }
+        function toggleQuickNav() { document.getElementById('quick-nav-modal').classList.toggle('hidden'); }
 
         function renderQuickNavGrid() {
             const grid = document.getElementById('quick-nav-grid');
@@ -973,134 +1279,82 @@ his/ father/ playing/ basketball/ Nam/ are /the/ and/ at/ gym/ now/.`;
             appState.questions.forEach((q, i) => {
                 const isDone = appState.answers[i] !== undefined;
                 const btn = document.createElement('button');
-                btn.className = `p-2 rounded-lg font-bold text-sm btn-press ${isDone ? 'bg-green-500 text-white shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`;
+                btn.className = `p-2 rounded-lg font-bold text-sm btn-press ${isDone ? 'bg-[#22c55e] text-white shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`;
                 btn.innerText = i + 1;
-                btn.onclick = () => {
-                    appState.currentIndex = i;
-                    renderQuestion();
-                    toggleQuickNav();
-                };
+                btn.onclick = () => { appState.currentIndex = i; renderQuestion(); toggleQuickNav(); };
                 grid.appendChild(btn);
             });
         }
 
-        // --- Popups ---
-        function showFeedback(isCorrect) {
+        function showFeedback(isCorrect, explanationHTML) {
             const overlay = document.getElementById('feedback-overlay');
             const card = document.getElementById('feedback-card');
             const icon = document.getElementById('feedback-icon');
             const title = document.getElementById('feedback-title');
             const desc = document.getElementById('feedback-desc');
+            const expBox = document.getElementById('feedback-explanation');
+            const closeBtn = document.getElementById('btn-close-feedback');
 
             overlay.classList.remove('hidden');
             setTimeout(() => card.classList.remove('scale-90'), 10);
+            
+            expBox.innerHTML = explanationHTML; 
 
             if (isCorrect) {
+                card.className = "bg-white rounded-[2rem] p-8 max-w-md w-full text-center transform scale-100 transition-transform shadow-2xl relative border-[3px] border-[#22c55e]";
                 icon.innerText = "🎉";
                 title.innerText = "Chính xác!";
-                title.className = "text-3xl font-black mb-2 text-green-600";
-                desc.innerText = "Em làm rất tốt, tiếp tục phát huy nhé!";
+                title.className = "text-3xl font-black mb-2 text-[#22c55e]";
+                desc.innerText = "Tuyệt vời, em đã trả lời đúng!";
+                expBox.className = "bg-[#f0fdf4] p-5 rounded-2xl text-left text-[15px] font-semibold mb-6 border-l-[6px] border-[#22c55e] text-green-900 leading-relaxed";
+                closeBtn.className = "w-full bg-[#22c55e] hover:bg-[#16a34a] font-black text-xl py-4 rounded-2xl btn-press text-white shadow-[0_4px_14px_0_rgba(34,197,94,0.39)]";
+                closeBtn.innerText = "Tiếp tục ➔";
             } else {
-                icon.innerText = "💡";
+                card.className = "bg-white rounded-[2rem] p-8 max-w-md w-full text-center transform scale-100 transition-transform shadow-2xl relative border-[3px] border-[#ef4444] shake-animation";
+                icon.innerText = "⚠️";
                 title.innerText = "Chưa đúng rồi!";
-                title.className = "text-3xl font-black mb-2 text-red-600";
-                desc.innerText = "Hãy đọc lại kỹ câu hỏi và thử lại nhé.";
+                title.className = "text-3xl font-black mb-2 text-red-500";
+                desc.innerText = "Không sao cả, hãy xem lại phân tích nhé!";
+                expBox.className = "bg-[#fef2f2] p-5 rounded-2xl text-left text-[15px] font-semibold mb-6 border-l-[6px] border-[#ef4444] text-red-900 leading-relaxed";
+                closeBtn.className = "w-full bg-[#ef4444] hover:bg-[#dc2626] font-black text-xl py-4 rounded-2xl btn-press text-white shadow-[0_4px_14px_0_rgba(239,68,68,0.39)]";
+                closeBtn.innerText = "Đã hiểu & Thử lại";
             }
         }
 
         function closeFeedback() {
-            const card = document.getElementById('feedback-card');
-            card.classList.add('scale-90');
-            setTimeout(() => {
-                document.getElementById('feedback-overlay').classList.add('hidden');
-            }, 150);
+            document.getElementById('feedback-card').classList.add('scale-90');
+            setTimeout(() => document.getElementById('feedback-overlay').classList.add('hidden'), 150);
         }
 
-        // --- Report Modal ---
         function showReport() {
             let perfect = 0, redo = 0;
             const totalDone = Object.keys(appState.answers).length;
-            
-            Object.values(appState.answers).forEach(val => {
-                if (val === true) perfect++;
-                if (val === false) redo++;
-            });
-
+            Object.values(appState.answers).forEach(val => { if (val) perfect++; else redo++; });
             document.getElementById('rp-total').innerText = `${totalDone}/300`;
             document.getElementById('rp-perfect').innerText = perfect;
             document.getElementById('rp-redo').innerText = redo;
-
             const tbody = document.getElementById('rp-table-body');
             tbody.innerHTML = '';
-            
-            // Render các câu đã làm sai
             Object.keys(appState.lastWrong).forEach(idx => {
                 const q = appState.questions[idx];
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-gray-50 transition-colors";
-                
-                let correctAnswerStr = "";
-                if(q.type === 'mcq') correctAnswerStr = q.options[q.correct];
-                else correctAnswerStr = q.words.join(' '); // Hiển thị tạm
-
-                tr.innerHTML = `
-                    <td class="p-4 border-b-2 border-gray-100">
-                        <span class="font-bold text-blue-600">[Câu ${parseInt(idx)+1}]</span> 
-                        ${q.question || "Sắp xếp câu"}
-                    </td>
-                    <td class="p-4 border-b-2 border-gray-100 text-red-600 font-semibold">${appState.lastWrong[idx]}</td>
-                    <td class="p-4 border-b-2 border-gray-100 text-green-600 font-bold">Chính xác</td>
-                `;
+                tr.innerHTML = `<td class="p-4 border-b-2 border-gray-100"><span class="font-bold text-blue-600">[Câu ${parseInt(idx)+1}]</span> ${q.question || "Sắp xếp câu"}</td><td class="p-4 border-b-2 border-gray-100 text-red-600 font-semibold">${appState.lastWrong[idx]}</td><td class="p-4 border-b-2 border-gray-100 text-green-600 font-bold">Chính xác</td>`;
                 tbody.appendChild(tr);
             });
-            
-            if (Object.keys(appState.lastWrong).length === 0 && totalDone > 0) {
-                tbody.innerHTML = `<tr><td colspan="3" class="p-8 text-center text-gray-500 font-bold">Tuyệt vời! Em chưa làm sai câu nào cả! 🌟</td></tr>`;
-            }
-
             document.getElementById('report-modal').classList.remove('hidden');
         }
 
-        function closeReport() {
-            document.getElementById('report-modal').classList.add('hidden');
-        }
+        function closeReport() { document.getElementById('report-modal').classList.add('hidden'); }
 
-        // --- Confetti Effect (Siêu nhẹ) ---
         function fireConfetti() {
-            const canvas = document.getElementById('confetti');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            canvas.classList.remove('hidden');
-
-            const particles = [];
-            for(let i=0; i<100; i++) {
-                particles.push({
-                    x: canvas.width/2, y: canvas.height/2 + 100,
-                    r: Math.random() * 6 + 2,
-                    dx: Math.random() * 10 - 5,
-                    dy: Math.random() * -10 - 5,
-                    color: `hsl(${Math.random()*360}, 100%, 50%)`
-                });
-            }
-
+            const canvas = document.getElementById('confetti'), ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight; canvas.classList.remove('hidden');
+            const particles = Array.from({length:100}, () => ({x:canvas.width/2, y:canvas.height/2+100, r:Math.random()*6+2, dx:Math.random()*10-5, dy:Math.random()*-10-5, color:`hsl(${Math.random()*360},100%,50%)`}));
             function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                let active = false;
-                particles.forEach(p => {
-                    p.dy += 0.3; // gravity
-                    p.x += p.dx;
-                    p.y += p.dy;
-                    if(p.y < canvas.height) active = true;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-                    ctx.fillStyle = p.color;
-                    ctx.fill();
-                });
-                if(active) requestAnimationFrame(animate);
-                else canvas.classList.add('hidden');
-            }
-            animate();
+                ctx.clearRect(0, 0, canvas.width, canvas.height); let active = false;
+                particles.forEach(p => { p.dy+=0.3; p.x+=p.dx; p.y+=p.dy; if(p.y<canvas.height) active = true; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fillStyle=p.color; ctx.fill(); });
+                if(active) requestAnimationFrame(animate); else canvas.classList.add('hidden');
+            } animate();
         }
     </script>
 </body>
