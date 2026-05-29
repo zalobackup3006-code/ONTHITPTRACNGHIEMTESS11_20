@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siêu Nhân Tiếng Anh - Trắc Nghiệm Thông Minh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Nunito', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .btn-press {
+            transition: all 0.15s ease;
+        }
+        .btn-press:active {
+            transform: scale(0.95);
+        }
+        /* Custom Scrollbar cho Quick Nav */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Hiệu ứng rung khi sai */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+        .shake-animation { animation: shake 0.4s ease-in-out; }
+        
+        /* Ẩn dấu chấm hỏi / dấu phẩy do format gốc */
+        .clean-text { line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 min-h-screen text-gray-800 overflow-hidden flex flex-col relative">
+
+    <!-- Canvas cho hiệu ứng pháo hoa -->
+    <canvas id="confetti" class="fixed inset-0 w-full h-full pointer-events-none z-50 hidden"></canvas>
+
+    <!-- Màn hình Welcome -->
+    <div id="welcome-screen" class="fixed inset-0 z-40 flex items-center justify-center bg-gradient-to-br from-blue-400 to-purple-600 p-4">
+        <div class="glass-card rounded-3xl p-8 max-w-md w-full text-center">
+            <div class="text-6xl mb-4">🚀</div>
+            <h1 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2">Siêu Nhân Tiếng Anh</h1>
+            <p class="text-gray-500 font-semibold mb-8">Cùng chinh phục 300 thử thách nhé!</p>
+            <input type="text" id="student-name" placeholder="Nhập tên của em..." 
+                   class="w-full text-xl p-4 border-4 border-blue-100 rounded-2xl focus:outline-none focus:border-blue-400 text-center font-bold mb-6 transition-colors">
+            <button onclick="startApp()" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-black text-xl py-4 rounded-2xl shadow-lg hover:shadow-xl btn-press">
+                BẮT ĐẦU NGAY!
+            </button>
+        </div>
+    </div>
+
+    <!-- Layout chính của App (ẩn lúc đầu) -->
+    <div id="app-screen" class="hidden flex-1 flex flex-col h-screen max-w-5xl mx-auto w-full p-2 md:p-6 relative">
+        
+        <!-- Header: Tiết độ & Controls -->
+        <header class="flex flex-wrap items-center justify-between bg-white rounded-2xl p-4 shadow-sm mb-4 gap-4 z-20 relative">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-black text-xl">
+                    <span id="header-avatar">👦</span>
+                </div>
+                <div>
+                    <h2 id="header-name" class="font-black text-lg text-gray-800">Tên Học Sinh</h2>
+                    <div class="flex items-center gap-2 text-sm font-bold text-gray-500">
+                        <span>Hoàn thành:</span>
+                        <span id="header-progress-text" class="text-blue-600">0/300</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex-1 w-full md:w-auto md:max-w-xs h-4 bg-gray-100 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-gradient-to-r from-green-400 to-blue-500 w-0 transition-all duration-500"></div>
+            </div>
+
+            <div class="flex gap-2 w-full md:w-auto justify-end">
+                <button id="btn-report" onclick="showReport()" class="hidden bg-purple-100 hover:bg-purple-200 text-purple-700 px-4 py-2 rounded-xl font-bold btn-press flex items-center gap-2">
+                    📊 Báo Cáo
+                </button>
+                <button onclick="toggleQuickNav()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-bold btn-press flex items-center gap-2">
+                    📍 Chọn Câu
+                </button>
+            </div>
+            
+            <!-- Modal Quick Nav -->
+            <div id="quick-nav-modal" class="hidden absolute top-full right-0 mt-2 w-full md:w-96 bg-white rounded-2xl shadow-2xl border-2 border-gray-100 p-4 max-h-[60vh] overflow-y-auto">
+                <h3 class="font-black text-lg mb-3">Danh sách câu hỏi</h3>
+                <div id="quick-nav-grid" class="grid grid-cols-5 gap-2">
+                    <!-- Nút render động -->
+                </div>
+            </div>
+        </header>
+
+        <!-- Khung Câu Hỏi -->
+        <main class="flex-1 glass-card rounded-3xl p-6 md:p-10 flex flex-col shadow-2xl overflow-y-auto relative z-10">
+            <!-- Header Câu Hỏi -->
+            <div class="flex items-center justify-between mb-6 border-b-2 border-gray-100 pb-4">
+                <div class="bg-blue-100 text-blue-700 px-4 py-2 rounded-xl font-black text-lg tracking-wide" id="q-badge">
+                    Câu 1 / 300
+                </div>
+                <div class="text-gray-500 font-bold text-right" id="q-sample-info">
+                    Bài tập 11 - Task 1
+                </div>
+            </div>
+
+            <!-- Nội dung câu hỏi -->
+            <h2 id="q-instruction" class="text-xl md:text-2xl font-black text-indigo-900 mb-2"></h2>
+            <p id="q-text" class="text-2xl md:text-3xl font-extrabold text-gray-800 mb-8 clean-text"></p>
+
+            <!-- Vùng tương tác -->
+            <div id="interactive-area" class="flex-1 flex flex-col justify-center">
+                <!-- Sẽ chèn Grid nút MCQ hoặc khu vực Reorder bằng JS -->
+            </div>
+
+            <!-- Vùng nút điều hướng chính -->
+            <div class="mt-8 pt-6 border-t-2 border-gray-100 flex justify-end">
+                <button id="btn-next" onclick="nextQuestion()" class="hidden bg-gradient-to-r from-green-400 to-green-600 text-white px-8 py-4 rounded-2xl font-black text-xl shadow-lg hover:shadow-xl btn-press flex items-center gap-2">
+                    Câu Tiếp Theo ➔
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Popups Feedback Tức Thì -->
+    <div id="feedback-overlay" class="fixed inset-0 z-50 bg-black/50 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+        <div id="feedback-card" class="bg-white rounded-3xl p-8 max-w-sm w-full text-center transform scale-90 transition-transform">
+            <div id="feedback-icon" class="text-7xl mb-4">✅</div>
+            <h3 id="feedback-title" class="text-3xl font-black mb-2">Chính xác!</h3>
+            <p id="feedback-desc" class="text-gray-600 font-bold text-lg mb-6">Em làm rất tốt!</p>
+            <button onclick="closeFeedback()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-lg py-3 rounded-xl btn-press">
+                Đóng
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Report -->
+    <div id="report-modal" class="fixed inset-0 z-50 bg-gray-900/80 hidden flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Báo Cáo Kết Quả</h2>
+                <button onclick="closeReport()" class="text-gray-400 hover:text-red-500 font-black text-2xl btn-press">✕</button>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-4 mb-6 text-center">
+                <div class="bg-blue-50 p-4 rounded-2xl border-2 border-blue-100">
+                    <div class="text-sm font-bold text-blue-500 uppercase tracking-wider mb-1">Đã Hoàn Thành</div>
+                    <div id="rp-total" class="text-3xl font-black text-blue-700">0/300</div>
+                </div>
+                <div class="bg-green-50 p-4 rounded-2xl border-2 border-green-100">
+                    <div class="text-sm font-bold text-green-500 uppercase tracking-wider mb-1">Đúng Lần Đầu</div>
+                    <div id="rp-perfect" class="text-3xl font-black text-green-700">0</div>
+                </div>
+                <div class="bg-red-50 p-4 rounded-2xl border-2 border-red-100">
+                    <div class="text-sm font-bold text-red-500 uppercase tracking-wider mb-1">Cần Làm Lại</div>
+                    <div id="rp-redo" class="text-3xl font-black text-red-700">0</div>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto border-2 border-gray-100 rounded-2xl">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-50 sticky top-0 shadow-sm">
+                        <tr>
+                            <th class="p-4 font-bold text-gray-600 border-b-2">Câu Hỏi</th>
+                            <th class="p-4 font-bold text-gray-600 border-b-2 text-red-500">Lần sai cuối</th>
+                            <th class="p-4 font-bold text-gray-600 border-b-2 text-green-500">Đáp án đúng</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rp-table-body" class="divide-y-2 divide-gray-100">
+                        <!-- Nội dung render động -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- DỮ LIỆU & LOGIC XỬ LÝ JS -->
+    <script>
+        /* ====================================================================
+           1. CẤU TRÚC DỮ LIỆU & ĐÁP ÁN (Chuẩn xác 100% không cần Regex phức tạp)
+           Chỉ định index đáp án đúng cho các Task 1,2,3 (MCQ).
+           Cung cấp câu chuẩn (đã bỏ dấu) cho Task 4 (Reorder).
+           ==================================================================== */
+        const RAW_DATA = `BÀI TẬP SỐ 11
+Task 1.
+A. hairdresser B. tour guide C. office D. scientist
+A. pilot B. plane C. helicopter D. speedboat
+A. calm B. weather C. breeze D. clear
+A. rainy B. windy C. thirty D. stormy
+A. art B. humid C. dry D. gray
+Task 2.
+A. cook B. look C. book D. noon
+A. visited B. painted C. played D. needed
+A. three B. that C. thin D. thick
+A. five B. sit C. nice D. fine
+A. subjects B. ships C. balls D. cooks
+Task 3.
+I'm going to Spain ______.
+A. yesterday B. next week C. last week D. last month
+She is going ______ the museum tomorrow.
+A. visit B. to visiting C. to visit D. to visits
+I think, many people will ______ astronauts in the future.
+A. is B. am C. be D. are
+There will be ______ snowstorm, so my family is going to stay at home.
+A. some B. a C. an D. many
+Where is she from? She's from ______.
+A. Spain B. English C. American D. Italian
+How many ______ do you have?
+A. pen B. book C. ball D. cars
+When is your birthday? It's on ______.
+A. June one B. June first C. June once D. first June
+Would you like to have a glass of lemonade? - ______.
+A. Yes, I do B. Yes, please C. No, please D. Yes, I like
+______ do you visit your grandparents?
+A. How many B. How much C. How far D. How often
+It's cold and snowy in ______.
+A. winter B. autumn C. summer D. tomorrow
+Task 4.
+he/ have/ Did/ a/ in/ barbecue/ garden/ the/ yesterday?
+thirsty/ I/ feel/ ./want/ I/ to/ drink/ water/ some.
+headache/ She/ a/ has/./ shouldn't/ She/ stay/ late/ up.
+make/ Let's/ juice/ apple/ ./ Bring/ I'll/ apples/ some.
+bring/ a/ chocolate/ Will/ you/ pie/? /won't/ I/,/ No.
+usually/ My/ eats/ father/ cereal/ milk/ with/ breakfast/ for.
+would/ What/ to be/ Helen/ like/ when/ grows up/ she?
+I/ think/ tomorrow/ I'll /the/ mountains /visit/ .
+Phuong/ ./build/ Tuan/ and/ Hoa/ may/ beach/ sandcastles /the/ on/
+enjoyed/ we/ the/ and/ food/ at/ drinks/ the/ party/.
+BÀI TẬP SỐ 12
+Task 1.
+A. buy B. walk C. decorate D. boat
+A. souvenirs B. seashells C. around D. roses
+A. fresh B. juice C. healthy D. strong
+A. blouse B. trousers C. socks D. jeans
+A. snow white B. snow C. rain D. wind
+Task 2.
+A. home B. hour C. him D. hot
+A. wear B. hear C. near D. year
+A. see B. sun C. sure D. son
+A. free B. meet C. see D. beer
+A. books B. pencils C. rulers D. bags
+Task 3.
+I like Maths because I like ______.
+A. solving problems B. doing experiments C. making things D. reading stories
+He should ______.
+A. skip breakfast B. eat fast food C. stay up late D. get some rest
+I need ______ milk.
+A. a lot B. some C. a few D. lot of
+I need ______ apples to make apple pies.
+A. a little B. a few C. lot of D. a lot
+What do people in Australia usually eat for dinner? They eat ______ with vegetables.
+A. smoothies B. meat C. lemonade D. soda
+The bank is ______ the restaurant and the hotel.
+A. right B. in front C. between D. next
+I would like to send this letter ______ the USA.
+A. on B. at C. in D. to
+Which are your brother's favorite dishes?
+A. No, thanks B. I'm thirsty C. Cartoons D. Chicken noodles
+We're very ______ now. We don't want any more food or drink.
+A. full B. hungry C. thirsty D. cold
+We want five ______.
+A. water B. lemonade C. bread D. eggs
+Task 4.
+school / Mai / bad /come/ to /can't /because/ she/ cold /has/ a/.
+does/ sister/ What/ in/ do/ free/ her/ time/your?
+you/ fishing/ Do/ with/ father/ your/ go/ in/ free time/ your?
+Tam/ gentle / very/ beautiful/ and/ was.
+you/ like/ What/ would/ future/ in/ to/ be/ the?
+Italy/ do/ in/ people/ What/ eat/ usually/ dinner/ for?
+eat/ fruit/ They/ bread/ usually/ breakfast/ for/ with.
+your/ would/ What/ brother/ like/ to be/ when/ grows up/ he?
+likes/ Sue/ hair/ cutting. a/ I/ she'll/ think/ be/ hairdresser.
+am/ going/ I/ the/ visit/ to/ mountains/ morning/ next/.
+BÀI TẬP SỐ 13
+Task 1.
+A. city B. countryside C. classroom D. mountain
+A. active B. cashier C. clever D. helpful
+A. building B. flat C. house D. noisy
+A. picture B. bake C. paint D. decorate
+A. third B. math C. forth D. fifth
+Task 2.
+A. kitchen B. fish C. library D. tennis
+A. that B. those C. there D. thin
+A. joined B. roared C. moved D. watched
+A. desks B. rubbers C. teachers D. rulers
+A. city B. clean C. cook D. canteen
+Task 3.
+Nam has the flu. He should ______.
+A. stay up late B. see a dentist C. take some medicine D. skip breakfast
+She need ______ oil to fry fish.
+A. few B. many C. much D. a few
+They usually eat eggs ______ rice for lunch.
+A. in B. on C. for D. with
+She likes travelling. She'd like to be a ______.
+A. tour guide B. farmer C. scientist D. chef
+Nam likes doing experiments. He'd like to be a ______.
+A. zookeeper B. vet C. scientist D. pilot
+What ______ she like ______ in her free time?
+A. does - does B. does - do C. do - doing D. does - doing
+What ______ your sister like? - She is active and hardworking.
+A. does B. is C. do D. are
+______ set square is it? - It is Minh's.
+A. Whose B. Who C. Which D. What
+Were you at the funfair yesterday? - ______.
+A. No, I weren't B. No, I wasn't C. No, I am not D. No, I didn't
+When's Teachers' day? It's on ______.
+A. November twenty B. November twentieth C. Twenty November D. Twentieth November
+Task 4.
+doesn't/ He/ writing/ like/. /doesn't/ He/ like/ a/ to be/ writer.
+would/ What/ to be/ you/ like/ when/ grow up/ you?
+are/ They/ have/ to/ going/ barbecue/ a/ weekend/ next.
+dry/ and/ It's/ hot/ today/./ is/ visit/ beach/ going/ the/ She/ to.
+weather/ the /like/ What's/ Melbourne/ in/ winter/ the/ in?
+rainy/ It's/ in/ and/ spring/ warm/ in/ the/ Ha Noi.
+are/ main/ Who/ characters/ the/ story/ the in?
+get/ You/ to/ Ngo Mon square/ can/ bus/ by/.
+eco-farm/ am/ going/ I/ visit/ to/ an/ summer/ this.
+often/ drinks/ She/ juice/ fresh/ and/ exercise/ morning/ does.
+BÀI TẬP SỐ 14
+Task 1.
+A. biologist B. geography C. scientist D. hairdresser
+A. history B. ethics C. biology D. March
+A. beautiful B. bigger C. smaller D. taller
+A. February B. December C. twelfth D. August
+A. take B. photo C. kite D. bike
+Task 2.
+A. plays B. stops C. walks D. wants
+A. gym B. vegetable C. orange D. green
+A. father B. car C. cat D. garden
+A. he B. engineer C. well D. friend
+A. next B. eleven C. where D. telephone
+Task 3.
+Would you like some drink?
+A. Yes, I do B. Yes, I does C. Yes, please D. Yes, I am
+What would you like to be in the future? - I'd like to be an ______.
+A. doctor B. engineer C. pilot D. vet
+I like the story "Snow White and the ______".
+A. seven magic lamps B. seven foxes C. seven crows D. seven dwarfs
+______ water do you drink everyday?
+A. How much B. How far C. How many D. How often
+Could you ______ colored paper?
+A. put on B. put off C. put up D. put in
+My mother is a nurse in a ______.
+A. restaurant B. nursing home C. police office D. movie theatre
+My mother is a ______ cook. She cooks very ______.
+A. good-good B. well-well C. well-good D. good-well
+______ car is it? - It is my father's.
+A. Who B. Whose C. Which D. What
+Mr. Nam runs so ______.
+A. fast B. fastly C. slow D. good
+When's New Year? It's on ______.
+A. first January B. January first C. January one D. one January
+Task 4.
+this / building/ Jenny / lives / in / parents / with / her.
+address/ My / is/ Oxford Street./ 45
+the/ near/ museum / sports / is/ centre./ the
+likes / she / helping / classmates. / her
+his / free / in / for/ walk / a / brother / My / doesn't / going/ time/ like.
+does/ how/ go/ your/ the/ cinema/ often/ to/ sister/?
+my/ I/ and/ brother/ the/ wrap/ presents/ Tony's birthday/ for.
+I / ride / bike /my / always / in / park. / the
+you / show / Could / us / school ?/ your / around
+tell/ Could / me / you / way/ the / to / the / room ?/ music
+BÀI TẬP SỐ 15
+Task 1.
+A. mountain B. beach C. sea D. ocean
+A. collect B. walk C. boat D. take
+A. burgers B. pancakes C. cupcakes D. salad
+A. when B. water C. who D. why
+A. forest B. river C. lake D. sea
+Task 2.
+A. kitchen B. pink C. nine D. tennis
+A. that B. those C. bathroom D. then
+A. mother B. brother C. Monday D. open
+A. cat B. Math C. have D. ball
+A. six B. sit C. stand D. close
+Task 3.
+What do you think ______ Ba Na Hills?
+A. in B. at C. of D. on
+______ is it from Ha Noi to Phu Quoc?
+A. How much B. How many C. How far D. How often
+We ______ a boat trip around the bay in Ha Long last summer.
+A. take B. took C. did D. bought
+Will you ______ the house for Tet?
+A. make B. do C. bring D. decorate
+What food will you ______ at the party?
+A. have B. had C. to have D. having
+She always ______ computers in IT class.
+A. use B. uses C. does D. makes
+I ______ cupcakes yesterday.
+A. make B. bake C. have D. baked
+I didn't ______ to the beach. I went to the mountain.
+A. went B. go C. do D. did
+Tom likes sports. I think he'll be a ______.
+A. pilot B. hairdresser C. soccer player D. writer
+I'm going to visit the beach ______.
+A. tomorrow B. yesterday C. last night D. last Friday
+Task 4.
+live / house/ a / in / in / I / countryside / the.
+English/ like/ I/ like/ because/ I/ languages/ learning.
+does/ like/ What/ brother/ your/ doing/ his/ in/ free time/?/
+friends/ I/ invite/ buy/ and/ for/ candy/ birthday/ my/ party.
+you/ Do/ live/ that/ building/ in/?/ I/ don't./ No/,/
+help/ Could/ dad/ your/ you/ kitchen/ in/ the/?/
+helpful/ best friend/ is/ My/ and/ clever.
+Viet Nam/ in/ People/ usually/ rice/ eat/ lunch/ for/./
+pencil/ Whose/ is/ sharpener/ it/?/ Tom's/ It's/./
+38/ address/ is/ My/ Dien Bien/ street/
+BÀI TẬP SỐ 16
+Task 1.
+A. chemist B. astronaut C. biologist D. history
+A. dry B. snowstorm C. calm D. breezy
+A. earache B. terrible C. weak D. sick
+A. fall B. autumn C. clear D. spring
+A. snow B. humid C. thunder D. flood
+Task 2.
+A. Thursday B. turtle C. nurse D. bus
+A. night B. autumn C. nose D. nice
+A. that B. think C. these D. than
+A. fly B. sunny C. cloudy D. snowy
+A. sneakers B. weather C. jeans D. clean
+Task 3.
+We ______ some souvenirs in Singapore last weekend.
+A. buy B. bought C. buying D. to bought
+______ do you water the plants? Once a day.
+A. How much B. How many C. How far D. How often
+When did Ben's family go to Ha Long Bay? ______
+A. next Sunday B. On Sunday C. last Sunday D. Today
+We have ______ things to do at Tet.
+A. lots of B. a lot C. lot of D. a little
+I'll decorate the house ______ beautiful pictures and flowers.
+A. in B. on C. of D. with
+She'll be at her home ______ 15 Quang Trung street.
+A. on B. in C. at D. with
+My science class starts at ______ a.m.
+A. seven a quarter B. seven past a quarter C. a quarter past seven D. past seven a quarter
+What's your favourite holiday? ______
+A. It's ethics B. It's Christmas C. It's summer D. It's chicken
+We clean our house and ______ red paper to celebrate Lunar New Year.
+A. put up B. put off C. blow up D. put in
+Matt ______ at the movie theater with his sister and mom last night.
+A. is B. are C. was D. were
+Task 4.
+does/ Laura/ What/ always/ at/ do/ weekend/ the?
+people/ Viet Nam/ often/ in/ Pho/ eat/ breakfast/ for.
+shouldn't/ skip/ You/ breakfast/ because/ not/ it's/ good/ health/ your/ for/./
+do/ do/ people/ What/ celebrate/ to/ Christmas/?/
+sometimes/ I/ with/ cooking/ help/ mum/ my/ the.
+going/ visit/ I/ to/ am/ beach/ tomorrow/ the/./
+friendly/ Vietnamese/ are/ and/ clever.
+tell/ Could/ me/ to/ way/ go/ downstairs/ you/?/ the/
+hope/ weather/ I/ is/ sunny/ the/ tomorrow/ ./
+writer/ to be/ in/ I/ like/ would/ a/ future/ the/./
+BÀI TẬP SỐ 17
+Task 1.
+A. America B. Indian C. China D. Australia
+A. noise B. active C. hardworking D. lazy
+A. sometimes B. someone C. never D. often
+A. tennis B. baseball C. sport D. basketball
+A. first B. third C. fifth D. six
+Task 2.
+A. son B. brother C. cousin D. mirror
+A. zebra B. pizza C. zoo D. zero
+A. teacher B. clean C. head D. jeans
+A. classmate B. cycle C. car D. cook
+A. lion B. wife C. child D. kick
+Task 3.
+What nationality is ______?
+A. he B. they C. I D. we
+What would you like to be when you grow up? I'd like to be an ______.
+A. dentist B. vet C. astronaut D. nurse
+Where is your classroom? It's on the ______ floor.
+A. three B. four C. second D. five
+My house is big. It has ______ rooms.
+A. fourth B. third C. sixth D. five
+What's the weather like ______ summer ______ your country?
+A. in-in B. in-on C. in-with D. with-on
+______ do you like math? Because I like solving math problems.
+A. Which B. Why C. What D. How
+She ______ learns new words in English class.
+A. never B. usually C. sometimes D. rarely
+Could you help me put away groceries? ______
+A. No, I don't B. No, I wouldn't C. Sorry, I'm busy D. No, never
+______ school bag is it? It's Lucy's.
+A. Who B. Where C. What D. Whose
+Where ______ the glue sticks? They are in the school bag.
+A. is B. are C. was D. were
+Task 4.
+you/ go/ Did/ Ha Long/ to/ Bay/ weekend/ last?
+visited/ Golden Bridge/ We/ and/ some/ bought/ souvenirs.
+will/ and/ on/ We/ sing/ dance/ Children's day.
+food/ What/ and/ drinks/ you/ will/ have/ the/ at/ party/?/
+went/ Laos/ last/ I/ year/ to/./ was/ The/ delicious/ food/./
+ate/ I/ too much/ pizza/. /now/ have/ I/ stomachache/ a/
+he/ have/ Did/ a/ in/ barbecue/ garden/ the/ yesterday?
+does/ How/ feel/ she/?/ feels/ stuffed/ She/ up/.
+usually/ My/ eats/ father/ cereal/ milk/ with/ breakfast/ for/.
+your/ would/ What/ brother/ like/ to be/ when/ grows up/ he?
+BÀI TẬP SỐ 18
+Task 1.
+A. hill B. pagoda C. week D. river
+A. fat B. weak C. strong D. headache
+A. fever B. dentist C. nurse D. doctor
+A. clever B. character C. helpful D. active
+A. seed B. live C. like D. think
+Task 2.
+A. take B. late C. table D. fall
+A. winter B. spring C. like D. fishing
+A. hot B. cold C. soccer D. volleyball
+A. music B. hundred C. summer D. bus
+A. weather B. season C. wear D. bear
+Task 3.
+What do you do in your ______ time?
+A. home B. busy C. good D. free
+"How ______ do you go swimming?" – Mai: "Once a week."
+A. far B. much C. often D. many
+Thu's brother plays tennis three ______ a week.
+A. day B. times C. time D. month
+An ______ sometimes gets out of the spaceship and walks in space.
+A. astronaut B. engineer C. architect D. doctor
+There is souvenir shop ______ Tran Phu Street.
+A. at B. on C. with D. of
+Could you tell me how ______ there?
+A. get B. getting C. to get D. to getting
+The supermarket is ______ of you.
+A. near B. opposite C. next D. in front
+How ______ is it from Hue to Ho Chi Minh City?
+A. far B. much C. often D. many
+______ pencil is it? It's Linh's.
+A. Who B. Where C. What D. Whose
+I would like to send this letter ______ the USA.
+A. to B. from C. in D. on
+Task 4.
+every/ She/ visits/ Sunday/ her/ grandparents/.
+story/ Who/ main/ character/ is/ the/ in/ the/?
+look/ Doctors/ after/ in/ hospital/ the/ patients/.
+post office/ the/ between/ and/ the movie theater/ It's/.
+rice/ do/ How/ eat/ much/ you/ every day/?
+water / much/ drink/ How/ you/ do/ everyday/?
+winter/ What/ like/ is/ country/ your/ in/ the/?
+usually/ hot/ is/ It/ and/ are/ there/ flowers/ a lot of/ summer/ in/.
+Hoan Kiem/ I/ lake/ think/ big/ quiet/ and/ is /.
+go/ I'll/ Phu Quoc/ to/ island/ year/ next/.
+BÀI TẬP SỐ 19
+Task 1.
+A. cold B. hungry C. meat D. tired
+A. had B. visited C. took D. made
+A. tired B. surprised C. excited D. boring
+A. many B. much C. a little D. milk
+A. pilot B. drive C. driver D. astronaut
+Task 2.
+A. January B. music C. study D. computer
+A. September B. remember C. November D. December
+A. white B. kite C. nine D. April
+A. October B. snow C. now D. window
+A. room B. Moon C. school D. floor
+Task 3.
+______ were you born? I was born in Ha Noi.
+A. Who B. Where C. What D. Whose
+We ______ in Ho Chi Minh city last week.
+A. live B. lives C. lived D. are living
+______ he play badminton yesterday morning.
+A. do B. does C. was D. did
+Are you ______ to watch T.V tonight?- No, I'm not.
+A. going B. go C. do D. doing
+What do you want ______ in the future?
+A. being B. to be C. be D. are
+The ninth month of the year is ______?
+A. June B. July C. August D. September
+May is the ______ month of the year.
+A. second B. fifth C. third D. fourth
+Music, English, Math are ______ at school.
+A. subjects B. rooms C. games D. festivals
+There ______ a lot of people at the party last night.
+A. is B. are C. was D. were
+We will go to the cinema ______.
+A. today B. tomorrow C. last night D. yesterday
+Task 4.
+you/ fishing/ Do/ with/ father/ your/ go/ in/ free time/ your/?
+often/I/ after / school/./ with/ play/ football / my classmates/
+likes/ Nam/ animals/ farm/./ he'll/ think/ I/ be/ farmer/ a/.
+would/ What/ to be/ Helen/ like/ when/ grows up/ she/?
+am/ going/ I/ the/ visit/ to/ mountains/ morning/ next/.
+next/ He/ going/ make/ is/ to/ crafts/ week/ paper/.
+part/ in/ festival/ did/ the/ sports/you/take/?
+always/ His / father / up/ at / gets/ 5.30 / morning/ every/.
+clear/ today/ It's/. /I/ then/ going/ am/ to/ play outside/.
+Hoa/ her / are /to/ Ha Noi/ three/ for/ days/ and/ sister/ going/visit /.
+BÀI TẬP SỐ 20
+Task 1.
+A. projects B. problems C. solves D. experiments
+A. where B. whose C. which D. want
+A. square B. above C. beside D. in front of
+A. glue stick B. school C. set square D. crayon
+A. aquarium B. campsite C. funfair D. around
+Task 2.
+A. bat B. animal C. man D. amazing
+A. modern B. holiday C. pagoda D. foggy
+A. fun B. ruler C. number D. subject
+A. station B. cinema C. place D. late
+A. drink B. chicken C. picture D. write
+Task 3.
+Why would you like to be a reporter. Because I'd like to ______.
+A. grow flowers B. report the news C. teach children D. write stories
+New Year is on ______.
+A. January first B. first January C. Junuary one D. one January
+What is your ______? It's 15 Nguyen Du street.
+A. house B. flat C. building D. address
+There will be ______ showers, so I'm going to bring the raincoat.
+A. a B. an C. some D. any
+These shoes are ______ than those ones?
+A. cheap B. cheapest C. cheaper D. more cheap
+The sixth month of the year is ______?
+A. June B. July C. August D. September
+Which places ______ you visit when you were in Ha Long.
+A. do B. did C. are D. were
+He kicks the ball ______.
+A. hardly B. good C. goodly D. hard
+I live in flat 18 ______ the second floor of Ha Noi Tower.
+A. in B. at C. on D. of
+He often travels ______ car ______ my father.
+A. by/ for B. by/ with C. with/ by D. for/ by
+Task 4.
+How/ you/ get/ did/ Tuan Chau island/ to/ your last holiday/?
+learns/ He/ new/ often/ words/ class/ in/ English/.
+his/ crowded/ parents/ He/ in/ with/ lives/ a/ town/.
+at/ Tony/ the/ was/ stadium/ Sunday/ last/. /It/ noisy/ was/
+seashells/ I/ with/ collected/ brother/ on/ my/ beach/ the/.
+going/ we/ have/ are/ Mid-Autumn/ to/ party/ a/ on/ festival/.
+English/ Mai /learns /by/ books /reading /free /comic/ in/ her /time/.
+my/ I/ favourite/ last night./ TV programme/ watched/.
+get/ presents/ lot/ Children/ a/ Children's/ on/ Day/of/.
+his/ father/ playing/ basketball/ Nam/ are /the/ and/ at/ gym/ now/.`;
+
+        const ANSWERS = {
+            11: {
+                1: [2,0,1,2,0], 2: [3,2,1,1,2], 3: [1,2,2,1,0,3,1,1,3,0],
+                4: ["Did he have a barbecue in the garden yesterday", "I feel thirsty I want to drink some water", "She has a headache She shouldn't stay up late", "Let's make apple juice I'll bring some apples", "Will you bring a chocolate pie No I won't", "My father usually eats cereal with milk for breakfast", "What would Helen like to be when she grows up", "I think I'll visit the mountains tomorrow", "Tuan and Hoa may build sandcastles on the beach", "We enjoyed the food and drinks at the party"]
+            },
+            12: {
+                1: [3,2,1,0,0], 2: [1,0,1,2,0], 3: [0,3,1,1,1,2,3,3,0,3],
+                4: ["Mai can't come to school because she has a bad cold", "What does your sister do in her free time", "Do you go fishing with your father in your free time", "Tam was very gentle and beautiful", "What would you like to be in the future", "What do people in Italy usually eat for dinner", "They usually eat bread with fruit for breakfast", "What would your brother like to be when he grows up", "Sue likes cutting hair I think she'll be a hairdresser", "I am going to visit the mountains next morning"]
+            },
+            13: {
+                1: [2,1,3,0,1], 2: [2,3,3,0,0], 3: [2,2,3,0,2,3,1,0,1,1],
+                4: ["He doesn't like writing He doesn't like to be a writer", "What would you like to be when you grow up", "They are going to have a barbecue next weekend", "It's hot and dry today She is going to visit the beach", "What's the weather like in Melbourne in the winter", "It's warm and rainy in Ha Noi in the spring", "Who are the main characters in the story", "You can get to Ngo Mon square by bus", "I am going to visit an eco-farm this summer", "She often drinks fresh juice and does morning exercise"]
+            },
+            14: {
+                1: [1,3,0,2,0], 2: [0,3,2,0,1], 3: [2,1,3,0,2,1,3,1,0,1],
+                4: ["Jenny lives in this building with her parents", "My address is 45 Oxford Street", "The sports centre is near the museum", "She likes helping her classmates", "My brother doesn't like going for a walk in his free time", "How often does your sister go to the cinema", "I and my brother wrap the presents for Tony's birthday", "I always ride my bike in the park", "Could you show us around your school", "Could you tell me the way to the music room"]
+            },
+            15: {
+                1: [0,2,3,1,0], 2: [2,2,3,3,3], 3: [2,2,1,3,0,1,3,1,2,0],
+                4: ["I live in a house in the countryside", "I like English because I like learning languages", "What does your brother like doing in his free time", "I invite my friends and buy candy for birthday party", "Do you live in that building No I don't", "Could you help your dad in the kitchen", "My best friend is clever and helpful", "People in Viet Nam usually eat rice for lunch", "Whose pencil sharpener is it It's Tom's", "My address is 38 Dien Bien street"]
+            },
+            16: {
+                1: [3,1,0,2,1], 2: [3,1,1,0,1], 3: [1,3,2,0,3,2,2,1,0,2],
+                4: ["What does Laura always do at the weekend", "People in Viet Nam often eat Pho for breakfast", "You shouldn't skip breakfast because it's not good for your health", "What do people do to celebrate Christmas", "I sometimes help my mum with the cooking", "I am going to visit the beach tomorrow", "Vietnamese are friendly and clever", "Could you tell me the way to go downstairs", "I hope the weather is sunny tomorrow", "I would like to be a writer in the future"]
+            },
+            17: {
+                1: [1,0,1,2,3], 2: [3,1,2,1,3], 3: [0,1,2,3,0,1,1,2,3,1],
+                4: ["Did you go to Ha Long Bay last weekend", "We visited Golden Bridge and bought some souvenirs", "We will sing and dance on Children's day", "What food and drinks will you have at the party", "I went to Laos last year The food was delicious", "I ate too much pizza now I have a stomachache", "Did he have a barbecue in the garden yesterday", "How does she feel She feels stuffed up", "My father usually eats cereal with milk for breakfast", "What would your brother like to be when he grows up"]
+            },
+            18: {
+                1: [2,3,0,1,0], 2: [3,2,1,0,1], 3: [3,2,1,0,1,2,3,0,3,0],
+                4: ["She visits her grandparents every Sunday", "Who is the main character in the story", "Doctors look after patients in the hospital", "It's between the post office and the movie theater", "How much rice do you eat every day", "How much water do you drink everyday", "What is the winter like in your country", "It is usually hot and there are a lot of flowers in summer", "I think Hoan Kiem lake is big and quiet", "I'll go to Phu Quoc island next year"]
+            },
+            19: {
+                1: [2,1,3,3,1], 2: [2,3,3,1,3], 3: [1,2,3,0,1,3,1,0,3,1],
+                4: ["Do you go fishing with your father in your free time", "I often play football with my classmates after school", "Nam likes farm animals I think he'll be a farmer", "What would Helen like to be when she grows up", "I am going to visit the mountains next morning", "He is going to make paper crafts next week", "Did you take part in the sports festival", "His father always gets up at 5.30 every morning", "It's clear today I am going to play outside then", "Hoa and her sister are going to visit Ha Noi for three days"]
+            },
+            20: {
+                1: [2,3,0,1,3], 2: [3,2,1,0,3], 3: [1,0,3,2,2,0,1,3,2,1],
+                4: ["How did you get to Tuan Chau island your last holiday", "He often learns new words in English class", "He lives in a crowded town with his parents", "Tony was at the stadium last Sunday It was noisy", "I collected seashells with my brother on the beach", "We are going to have a party on Mid-Autumn festival", "Mai learns English by reading comic books in her free time", "I watched my favourite TV programme last night", "Children get a lot of presents on Children's Day", "Nam and his father are playing basketball at the gym now"]
+            }
+        };
+
+        // Hàm xóa dấu câu để học sinh không bị sai oan
+        function cleanText(str) {
+            return str.replace(/[.,?]/g, '').trim();
+        }
+
+        function parseQuestions(raw) {
+            const result = [];
+            let qIdCounter = 0;
+            const samples = raw.split(/BÀI TẬP SỐ\s*(\d+)/);
+            
+            for (let i = 1; i < samples.length; i += 2) {
+                const sampleId = parseInt(samples[i]);
+                const content = samples[i+1];
+                const tasks = content.split(/Task\s*(\d+)[^\n]*\n/);
+
+                for (let j = 1; j < tasks.length; j += 2) {
+                    const taskId = parseInt(tasks[j]);
+                    const lines = tasks[j+1].split('\n').map(l => l.trim()).filter(l => l);
+                    
+                    let qIndex = 0;
+                    
+                    if (taskId === 1 || taskId === 2) {
+                        lines.forEach(line => {
+                            if (line.match(/^[A-Za-z]\./)) {
+                                const opts = [...line.matchAll(/(?:[A-Da-d])\.\s*(.+?)(?=(?:\s+[A-Da-d]\.)|$)/g)].map(m => m[1].trim());
+                                if(opts.length > 0) {
+                                    result.push({
+                                        id: qIdCounter++, sample: sampleId, task: taskId,
+                                        type: 'mcq',
+                                        instruction: taskId === 1 ? "Chọn từ khác loại (Odd one out)" : "Chọn từ có phát âm khác",
+                                        question: "",
+                                        options: opts,
+                                        correct: ANSWERS[sampleId][taskId][qIndex++]
+                                    });
+                                }
+                            }
+                        });
+                    } else if (taskId === 3) {
+                        for (let k = 0; k < lines.length; k++) {
+                            if (lines[k].match(/^[A-Za-z]\./)) {
+                                const opts = [...lines[k].matchAll(/(?:[A-Da-d])\.\s*(.+?)(?=(?:\s+[A-Da-d]\.)|$)/g)].map(m => m[1].trim());
+                                const qText = cleanText(lines[k-1] || "");
+                                result.push({
+                                    id: qIdCounter++, sample: sampleId, task: taskId,
+                                    type: 'mcq',
+                                    instruction: "Chọn đáp án đúng nhất",
+                                    question: qText,
+                                    options: opts,
+                                    correct: ANSWERS[sampleId][taskId][qIndex++]
+                                });
+                            }
+                        }
+                    } else if (taskId === 4) {
+                        lines.forEach(line => {
+                            if (line.includes('/')) {
+                                const words = line.split('/').map(w => cleanText(w)).filter(w => w);
+                                // Trộn ngẫu nhiên các từ
+                                const shuffledWords = [...words].sort(() => Math.random() - 0.5);
+                                result.push({
+                                    id: qIdCounter++, sample: sampleId, task: taskId,
+                                    type: 'reorder',
+                                    instruction: "Sắp xếp các từ thành câu hoàn chỉnh",
+                                    question: "",
+                                    words: shuffledWords,
+                                    correctStr: cleanText(ANSWERS[sampleId][taskId][qIndex++]).toLowerCase().replace(/\s+/g, '')
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+            return result;
+        }
+
+        // Tình trạng App (State)
+        const appState = {
+            name: '',
+            currentIndex: 0,
+            questions: parseQuestions(RAW_DATA),
+            answers: {}, // Lưu trạng thái đúng sai: { 0: true (đúng ngay), 1: false (có sai) }
+            lastWrong: {},
+            currentReorderAnswer: []
+        };
+
+        /* ====================================================================
+           2. LUỒNG ĐIỀU KHIỂN & RENDER GIAO DIỆN
+           ==================================================================== */
+        
+        function startApp() {
+            const nameInput = document.getElementById('student-name').value.trim();
+            if (!nameInput) {
+                alert("Em hãy nhập tên để bắt đầu nhé!");
+                return;
+            }
+            appState.name = nameInput;
+            document.getElementById('header-name').innerText = appState.name;
+            
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('app-screen').classList.remove('hidden');
+            
+            renderQuestion();
+            updateUI();
+        }
+
+        function renderQuestion() {
+            const q = appState.questions[appState.currentIndex];
+            appState.currentReorderAnswer = []; // Reset reorder buffer
+            
+            document.getElementById('q-badge').innerText = `Câu ${appState.currentIndex + 1} / ${appState.questions.length}`;
+            document.getElementById('q-sample-info').innerText = `Bài tập ${q.sample} - Task ${q.task}`;
+            document.getElementById('q-instruction').innerText = q.instruction;
+            document.getElementById('q-text').innerText = q.question;
+            
+            const area = document.getElementById('interactive-area');
+            area.innerHTML = '';
+            
+            const isCompleted = appState.answers[appState.currentIndex] !== undefined;
+
+            if (q.type === 'mcq') {
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4 mt-4';
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = `btn-press text-left text-xl font-bold p-6 rounded-2xl border-4 transition-all duration-200 
+                        ${isCompleted && idx === q.correct ? 'bg-green-100 border-green-500 text-green-800' : 'bg-white border-blue-100 hover:border-blue-400 text-gray-700 hover:bg-blue-50'}`;
+                    btn.innerHTML = `<span class="inline-block bg-blue-100 text-blue-600 rounded-lg w-10 h-10 text-center leading-10 mr-3">${String.fromCharCode(65+idx)}</span> ${opt}`;
+                    btn.onclick = () => checkMcqAnswer(idx, btn);
+                    grid.appendChild(btn);
+                });
+                area.appendChild(grid);
+            } 
+            else if (q.type === 'reorder') {
+                // Dropzone (Câu trả lời)
+                const answerZone = document.createElement('div');
+                answerZone.id = 'reorder-answer-zone';
+                answerZone.className = 'min-h-[80px] bg-blue-50 border-4 border-dashed border-blue-300 rounded-2xl p-4 flex flex-wrap gap-2 items-center mb-6';
+                
+                // Nguồn từ (Words pool)
+                const wordPool = document.createElement('div');
+                wordPool.id = 'reorder-word-pool';
+                wordPool.className = 'flex flex-wrap gap-3 justify-center mb-6';
+                
+                // Nếu đã hoàn thành, hiển thị thẳng câu đúng
+                if (isCompleted) {
+                    answerZone.className = 'min-h-[80px] bg-green-100 border-4 border-solid border-green-500 rounded-2xl p-4 flex flex-wrap gap-2 items-center mb-6 text-xl font-bold text-green-800';
+                    answerZone.innerText = ANSWERS[q.sample][q.task][appState.currentIndex % 10]; // Hacky fix for demo text
+                    answerZone.innerText = "Câu đã hoàn thành chính xác!";
+                } else {
+                    q.words.forEach((word, idx) => {
+                        const chip = document.createElement('button');
+                        chip.className = 'btn-press bg-white border-2 border-indigo-200 text-indigo-700 font-extrabold text-xl px-5 py-3 rounded-xl shadow-sm hover:bg-indigo-50 hover:border-indigo-400';
+                        chip.innerText = word;
+                        chip.onclick = () => moveWord(chip, word, idx, true);
+                        wordPool.appendChild(chip);
+                    });
+                }
+
+                area.appendChild(answerZone);
+                area.appendChild(wordPool);
+
+                if (!isCompleted) {
+                    const checkBtn = document.createElement('button');
+                    checkBtn.className = 'mx-auto block bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-3 rounded-2xl font-black text-xl shadow-md btn-press';
+                    checkBtn.innerText = 'Kiểm tra câu';
+                    checkBtn.onclick = () => checkReorderAnswer();
+                    area.appendChild(checkBtn);
+                }
+            }
+
+            // Xử lý nút Next
+            const btnNext = document.getElementById('btn-next');
+            if (isCompleted) {
+                btnNext.classList.remove('hidden');
+            } else {
+                btnNext.classList.add('hidden');
+            }
+        }
+
+        // --- Logic Câu hỏi ---
+        function checkMcqAnswer(selectedIndex, btnNode) {
+            const q = appState.questions[appState.currentIndex];
+            if (appState.answers[appState.currentIndex] !== undefined) return; // Đã làm đúng rồi
+
+            if (selectedIndex === q.correct) {
+                handleCorrect();
+                btnNode.className = 'btn-press text-left text-xl font-bold p-6 rounded-2xl border-4 bg-green-100 border-green-500 text-green-800';
+            } else {
+                handleWrong(`Em đã chọn: ${q.options[selectedIndex]}`);
+                btnNode.classList.add('bg-red-100', 'border-red-400', 'text-red-800', 'shake-animation');
+                setTimeout(() => {
+                    btnNode.classList.remove('shake-animation', 'bg-red-100', 'border-red-400', 'text-red-800');
+                }, 500);
+            }
+        }
+
+        function moveWord(chipNode, word, idx, isToAnswer) {
+            const answerZone = document.getElementById('reorder-answer-zone');
+            const wordPool = document.getElementById('reorder-word-pool');
+            
+            if (isToAnswer) {
+                appState.currentReorderAnswer.push(word);
+                chipNode.onclick = () => moveWord(chipNode, word, idx, false);
+                chipNode.classList.replace('bg-white', 'bg-indigo-100');
+                answerZone.appendChild(chipNode);
+            } else {
+                const i = appState.currentReorderAnswer.indexOf(word);
+                if(i > -1) appState.currentReorderAnswer.splice(i, 1);
+                chipNode.onclick = () => moveWord(chipNode, word, idx, true);
+                chipNode.classList.replace('bg-indigo-100', 'bg-white');
+                wordPool.appendChild(chipNode);
+            }
+        }
+
+        function checkReorderAnswer() {
+            const q = appState.questions[appState.currentIndex];
+            const userStr = appState.currentReorderAnswer.join('').toLowerCase().replace(/\s+/g, '');
+            
+            if (userStr === q.correctStr) {
+                handleCorrect();
+            } else {
+                handleWrong(`Câu của em ghép: ${appState.currentReorderAnswer.join(' ')}`);
+                document.getElementById('reorder-answer-zone').classList.add('shake-animation', 'border-red-400', 'bg-red-50');
+                setTimeout(() => {
+                    document.getElementById('reorder-answer-zone').classList.remove('shake-animation', 'border-red-400', 'bg-red-50');
+                }, 500);
+            }
+        }
+
+        // --- Logic Phản hồi ---
+        function handleCorrect() {
+            // Đánh dấu đúng
+            if (appState.answers[appState.currentIndex] === undefined) {
+                appState.answers[appState.currentIndex] = true; // Đúng lần đầu
+            }
+            
+            showFeedback(true);
+            document.getElementById('btn-next').classList.remove('hidden');
+            updateUI();
+            fireConfetti();
+        }
+
+        function handleWrong(wrongDetail) {
+            if (appState.answers[appState.currentIndex] === undefined) {
+                appState.answers[appState.currentIndex] = false; // Đã từng sai
+            }
+            appState.lastWrong[appState.currentIndex] = wrongDetail;
+            showFeedback(false);
+        }
+
+        function nextQuestion() {
+            if (appState.currentIndex < appState.questions.length - 1) {
+                appState.currentIndex++;
+                renderQuestion();
+            } else {
+                showReport();
+            }
+        }
+
+        // --- UI Updates ---
+        function updateUI() {
+            const totalDone = Object.keys(appState.answers).length;
+            const total = appState.questions.length;
+            
+            document.getElementById('header-progress-text').innerText = `${totalDone}/${total}`;
+            document.getElementById('progress-bar').style.width = `${(totalDone/total)*100}%`;
+
+            // Kiểm tra mở khóa nút Báo Cáo: Hoàn thành 25 câu của bất kỳ Sample nào
+            let unlockReport = false;
+            const sampleCounts = {};
+            Object.keys(appState.answers).forEach(qIdx => {
+                const sId = appState.questions[qIdx].sample;
+                sampleCounts[sId] = (sampleCounts[sId] || 0) + 1;
+                if(sampleCounts[sId] >= 25) unlockReport = true;
+            });
+
+            if (unlockReport) {
+                document.getElementById('btn-report').classList.remove('hidden');
+            }
+            
+            renderQuickNavGrid();
+        }
+
+        function toggleQuickNav() {
+            const modal = document.getElementById('quick-nav-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function renderQuickNavGrid() {
+            const grid = document.getElementById('quick-nav-grid');
+            grid.innerHTML = '';
+            appState.questions.forEach((q, i) => {
+                const isDone = appState.answers[i] !== undefined;
+                const btn = document.createElement('button');
+                btn.className = `p-2 rounded-lg font-bold text-sm btn-press ${isDone ? 'bg-green-500 text-white shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`;
+                btn.innerText = i + 1;
+                btn.onclick = () => {
+                    appState.currentIndex = i;
+                    renderQuestion();
+                    toggleQuickNav();
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        // --- Popups ---
+        function showFeedback(isCorrect) {
+            const overlay = document.getElementById('feedback-overlay');
+            const card = document.getElementById('feedback-card');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const desc = document.getElementById('feedback-desc');
+
+            overlay.classList.remove('hidden');
+            setTimeout(() => card.classList.remove('scale-90'), 10);
+
+            if (isCorrect) {
+                icon.innerText = "🎉";
+                title.innerText = "Chính xác!";
+                title.className = "text-3xl font-black mb-2 text-green-600";
+                desc.innerText = "Em làm rất tốt, tiếp tục phát huy nhé!";
+            } else {
+                icon.innerText = "💡";
+                title.innerText = "Chưa đúng rồi!";
+                title.className = "text-3xl font-black mb-2 text-red-600";
+                desc.innerText = "Hãy đọc lại kỹ câu hỏi và thử lại nhé.";
+            }
+        }
+
+        function closeFeedback() {
+            const card = document.getElementById('feedback-card');
+            card.classList.add('scale-90');
+            setTimeout(() => {
+                document.getElementById('feedback-overlay').classList.add('hidden');
+            }, 150);
+        }
+
+        // --- Report Modal ---
+        function showReport() {
+            let perfect = 0, redo = 0;
+            const totalDone = Object.keys(appState.answers).length;
+            
+            Object.values(appState.answers).forEach(val => {
+                if (val === true) perfect++;
+                if (val === false) redo++;
+            });
+
+            document.getElementById('rp-total').innerText = `${totalDone}/300`;
+            document.getElementById('rp-perfect').innerText = perfect;
+            document.getElementById('rp-redo').innerText = redo;
+
+            const tbody = document.getElementById('rp-table-body');
+            tbody.innerHTML = '';
+            
+            // Render các câu đã làm sai
+            Object.keys(appState.lastWrong).forEach(idx => {
+                const q = appState.questions[idx];
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50 transition-colors";
+                
+                let correctAnswerStr = "";
+                if(q.type === 'mcq') correctAnswerStr = q.options[q.correct];
+                else correctAnswerStr = q.words.join(' '); // Hiển thị tạm
+
+                tr.innerHTML = `
+                    <td class="p-4 border-b-2 border-gray-100">
+                        <span class="font-bold text-blue-600">[Câu ${parseInt(idx)+1}]</span> 
+                        ${q.question || "Sắp xếp câu"}
+                    </td>
+                    <td class="p-4 border-b-2 border-gray-100 text-red-600 font-semibold">${appState.lastWrong[idx]}</td>
+                    <td class="p-4 border-b-2 border-gray-100 text-green-600 font-bold">Chính xác</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            if (Object.keys(appState.lastWrong).length === 0 && totalDone > 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="p-8 text-center text-gray-500 font-bold">Tuyệt vời! Em chưa làm sai câu nào cả! 🌟</td></tr>`;
+            }
+
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function closeReport() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+
+        // --- Confetti Effect (Siêu nhẹ) ---
+        function fireConfetti() {
+            const canvas = document.getElementById('confetti');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.classList.remove('hidden');
+
+            const particles = [];
+            for(let i=0; i<100; i++) {
+                particles.push({
+                    x: canvas.width/2, y: canvas.height/2 + 100,
+                    r: Math.random() * 6 + 2,
+                    dx: Math.random() * 10 - 5,
+                    dy: Math.random() * -10 - 5,
+                    color: `hsl(${Math.random()*360}, 100%, 50%)`
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let active = false;
+                particles.forEach(p => {
+                    p.dy += 0.3; // gravity
+                    p.x += p.dx;
+                    p.y += p.dy;
+                    if(p.y < canvas.height) active = true;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                });
+                if(active) requestAnimationFrame(animate);
+                else canvas.classList.add('hidden');
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
